@@ -1,0 +1,6 @@
+name="hygears_misc"
+version="0.0.1"
+description="Hypios gears - misc"
+requires="ocsigen"
+archive(byte) = "hygears_misc.cmo"
+archive(native) = "hygears_misc.cmx"
