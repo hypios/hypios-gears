@@ -1,6 +1,0 @@
-name="hygears_misc"
-version="0.0.1"
-description="Hypios gears - misc"
-requires="ocsigen"
-archive(byte) = "hypios_gears.cma"
-archive(native) = "hypios_gears.cmxa"
