@@ -1,6 +1,0 @@
-name="hygears_sparql"
-version="0.0.1"
-description="Hypios gears - sparql"
-requires="ocsigen"
-archive(byte) = "hygears_sparql.cmo"
-archive(native) = "hygears_sparql.cmx"
