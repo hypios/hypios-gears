@@ -1,0 +1,16 @@
+### Starting build.
+# Target: connection.ml.depends, tags: { extension:ml, file:connection.ml, ocaml, ocamldep, pkg_curl, pkg_hygears_misc, pkg_ocsigen, pkg_threads, quiet, traverse }
+ocamlfind ocamldep -package threads -package ocsigen -package hygears_misc -package curl -modules connection.ml > connection.ml.depends # cached
+# Target: connection.cmo, tags: { byte, compile, extension:ml, file:connection.ml, implem, ocaml, pkg_curl, pkg_hygears_misc, pkg_ocsigen, pkg_threads, quiet, traverse }
+ocamlfind ocamlc -c -package threads -package ocsigen -package hygears_misc -package curl -thread -o connection.cmo connection.ml # cached
+# Target: factory.ml.depends, tags: { extension:ml, file:factory.ml, ocaml, ocamldep, pkg_curl, pkg_hygears_misc, pkg_ocsigen, pkg_threads, quiet, traverse }
+ocamlfind ocamldep -package threads -package ocsigen -package hygears_misc -package curl -modules factory.ml > factory.ml.depends
+# Target: command.ml.depends, tags: { extension:ml, file:command.ml, ocaml, ocamldep, pkg_curl, pkg_hygears_misc, pkg_ocsigen, pkg_threads, quiet, traverse }
+ocamlfind ocamldep -package threads -package ocsigen -package hygears_misc -package curl -modules command.ml > command.ml.depends # cached
+# Target: factory.cmo, tags: { byte, compile, extension:ml, file:factory.ml, implem, ocaml, pkg_curl, pkg_hygears_misc, pkg_ocsigen, pkg_threads, quiet, traverse }
+ocamlfind ocamlc -c -package threads -package ocsigen -package hygears_misc -package curl -thread -o factory.cmo factory.ml
+# Target: command.cmo, tags: { byte, compile, extension:ml, file:command.ml, implem, ocaml, pkg_curl, pkg_hygears_misc, pkg_ocsigen, pkg_threads, quiet, traverse }
+ocamlfind ocamlc -c -package threads -package ocsigen -package hygears_misc -package curl -thread -o command.cmo command.ml
+# Target: hygears_database.cmo, tags: { byte, extension:cmo, file:hygears_database.cmo, ocaml, pack, pkg_curl, pkg_hygears_misc, pkg_ocsigen, pkg_threads, quiet, traverse }
+ocamlfind ocamlc -pack connection.cmo factory.cmo command.cmo -o hygears_database.cmo
+# Compilation successful.
