@@ -1,0 +1,6 @@
+name="hygears_cache"
+version="0.0.1"
+description="Hypios gears - cache"
+requires="ocsigen"
+archive(byte) = "hygears_cache.cmo"
+archive(native) = "hygears_cache.cmx"
