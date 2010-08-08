@@ -466,6 +466,13 @@ let actions  =
       error = error ;
     } 
 
-let display source =
+let render source =
   Lexer.from_string () actions source 
+ >>=
+fun l ->
+  Lwt_util.map_serial (fun x -> x) l >>= fun r ->
+  Lwt.return {{ (map {: (r : Xhtmltypes_duce.flows list) :} with i -> i) }}
     
+  (* >>= fun r -> Lwt_list.map_s  (fun x -> x >>= fun c -> return {{ <div> c }})  r 
+  >>= fun l -> return {{ {: l :} }} 
+  *)

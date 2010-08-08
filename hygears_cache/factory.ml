@@ -40,7 +40,7 @@ module Stupid = functor (O: Signatures.V) ->
 
     let cache = new NativeCache.cache O.create O.max_size
  
-    let get key = cache#find key 
+    let get (key:key) = cache#find key 
 
     let update key diff = 
       cache#find key >>=
