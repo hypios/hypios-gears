@@ -1,0 +1,6 @@
+name="hygears_client"
+version="0.0.1"
+description="Hypios gears - client"
+requires="ocsigen"
+archive(byte) = "hygears_client.cmo"
+archive(native) = "hygears_client.cmx"

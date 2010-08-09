@@ -16,6 +16,7 @@
 
 open Lwt 
 
+(*
 module Stupid = functor (O: Signatures.V) -> 
   struct
  
@@ -27,10 +28,10 @@ module Stupid = functor (O: Signatures.V) ->
     let update diff value = failwith "Not implemented in this naive version"
             
   end
+*)
 
-
- module Make = functor (O: Signatures.V) -> 
-  struct 
+module Make = functor (O: Signatures.V) -> 
+    struct 
 
     type key = O.key 
     type value = O.value 
@@ -39,13 +40,16 @@ module Stupid = functor (O: Signatures.V) ->
     module NativeCache = Ocsigen_cache.Make (O)
 
     let cache = new NativeCache.cache O.create O.max_size
- 
+
     let get (key:key) = cache#find key 
 
     let update key diff = 
-      cache#find key >>=
-	O.update diff >>= fun updated_value -> 
-      cache#remove key ;
-      cache#add key updated_value ; return updated_value
+        cache#find key >>=
+        O.update diff >>= fun updated_value -> 
+            cache#remove key ;
+            cache#add key updated_value ; return updated_value
 
-  end
+    let clear () =
+        cache#clear ()
+
+        end
