@@ -16,10 +16,11 @@ open Connection
 
 
 let list_problems connection =
-    Ocsigen_http_client.get connection.host "/problem/json" ()
+    Ocsigen_http_client.get ~https:connection.https ~host:connection.host ~uri:"/problem/json" ()
         >>= fun frame -> 
             match frame.Ocsigen_http_frame.frame_content with
                 None -> failwith "Server down"
-              | Some data -> Ocsigen_stream.get data >>> Ocsigen_stream.string_of_stream >>= fun c -> Json_io.json_of_string c >>> return
+              | Some data -> Ocsigen_stream.get data >>> Ocsigen_stream.string_of_stream 
+                     >>= fun c -> Json_io.json_of_string c >>> return
 
  

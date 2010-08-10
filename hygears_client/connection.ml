@@ -1,5 +1,5 @@
 (*
- * hyGears - database
+ * hyGears client - connection
  *
  * (c) 2010 Hypios SAS - William Le Ferrand william@hypios.com
  *                       Simon Marc msimon@hypios.com
@@ -11,9 +11,11 @@
 type t =
     {
         host : string;
+        https : bool;
     }
 
-let create host = 
+let create ?(https=false) host = 
     {
         host = host;
+        https = https;
     }
