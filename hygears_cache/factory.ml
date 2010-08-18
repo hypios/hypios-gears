@@ -45,7 +45,7 @@ module Make = functor (O: Signatures.V) ->
 
     let update key diff = 
         cache#find key >>=
-        O.update diff >>= fun updated_value -> 
+        O.update key diff >>= fun updated_value -> 
             cache#remove key ;
             cache#add key updated_value ; return updated_value
 
