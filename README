@@ -11,3 +11,10 @@ HYPIOS GEARS - Hy!
 Hypios Gears are a set of modules that can be assembled to create a an hyProduct.
 
 william@hypios.com
+
+Order to build:
+      - hygears_misc
+      - hygears_cache
+      - hygears_wiki
+      - hygears_client
+      - hygears_database
