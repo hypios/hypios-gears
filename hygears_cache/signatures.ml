@@ -16,7 +16,7 @@ sig
     
   val max_size : int 
   val create : key -> value Lwt.t
-  val update : diff -> value -> value Lwt.t
+  val update : key -> diff -> value -> value Lwt.t
 
 end
 
