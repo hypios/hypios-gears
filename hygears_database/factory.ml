@@ -1,3 +1,4 @@
+
 (*
  * hyGears - database
  *
@@ -6,6 +7,39 @@
  *)
 
 open Connection
+
+
+let testing connection namegraph rdf = 
+
+  let counter = ref 0 in 
+    
+  let writer accum data =
+    Buffer.add_string accum data;
+    String.length data in
+
+  let reader str maxBytes =
+    let readBytes = min (String.length str - !counter) maxBytes in
+      if readBytes = 0 then ""
+      else 
+	(
+	  let c = !counter in
+	    counter := !counter + readBytes;
+	    String.sub str c readBytes) in
+        
+  let conn = Curl.init () in
+
+  let data = Printf.sprintf "data=%s&graph=%s&mime-type=application/x-turtle" (Curl.escape turtle) (Curl.escape namegraph) in
+  
+    Curl.setopt conn (Curl.CURLOPT_READFUNCTION (reader data));    
+    Curl.setopt conn (Curl.CURLOPT_PUT true) ; 
+    Curl.setopt conn (Curl.CURLOPT_URL (connection.prefix ^ "/data/"));
+
+    let result = Buffer.create 16384 in
+      
+      Curl.set_writefunction conn (writer result);
+      Curl.perform conn; 
+      Curl.cleanup conn; 
+      Buffer.contents result 
 
 let put_rdf connection namegraph rdf = 
 
@@ -38,6 +72,7 @@ let put_rdf connection namegraph rdf =
       Curl.perform conn; 
       Curl.cleanup conn; 
       Buffer.contents result 
+
 
 
 let put_turtle connection namegraph turtle = 
