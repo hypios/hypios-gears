@@ -25,7 +25,7 @@ let extract_result var result =
 	let value = List.find (fun affectation -> 
 	  match affectation with 
 	      Element ("binding", attrs, _) when (List.assoc "name" attrs = var) -> true
-	    | Element (e, attrs, _) -> List.iter (fun (k,v) -> Printf.printf "%s %s\n" k v); false
+	    | Element (e, attrs, _) ->  false
 	    | _ -> false) affectations in
 	
 	( match value with 
