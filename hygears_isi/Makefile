@@ -7,6 +7,9 @@ install:
 remove: 
 	ocamlfind remove hygears_isi
 
+test: 
+	ocamlbuild main.byte
+
 clean:
 	ocamlbuild -clean
 	rm -rf *~
