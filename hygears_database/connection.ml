@@ -16,4 +16,3 @@ let create server login password =
   { login = login ;
     password = password ; 
     prefix = server }
-

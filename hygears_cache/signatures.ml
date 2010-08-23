@@ -9,7 +9,7 @@ open Lwt
 
 module type V = 
 sig
-  type key 
+  type key
   type value
 
   type diff
