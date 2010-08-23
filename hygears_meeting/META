@@ -1,0 +1,6 @@
+name="hygears_meeting"
+version="0.0.1"
+description="Hypios gears - meeting"
+requires="ocsigen"
+archive(byte) = "hygears_meeting.cmo"
+archive(native) = "hygears_meeting.cmx"

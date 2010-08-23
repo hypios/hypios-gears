@@ -1,0 +1,8 @@
+HyGears Meeting 
+20.08.2010 William Le Ferrand william.le-ferrand@polytechnique.edu
+
+Doodle-like
+Handles a single meeting, with participations. Simple traversal functions are provided. 
+
+This module was written (ie has extended signature) to be usable by HyGears_cache. 
+

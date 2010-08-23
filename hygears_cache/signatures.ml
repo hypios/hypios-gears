@@ -15,7 +15,11 @@ sig
   type diff
     
   val max_size : int 
-  val create : key -> value Lwt.t
+
+  val create : key -> value Lwt.t (* aka load *)
+    
+  val insert : key -> value -> unit Lwt.t  (* aka save *)
+  
   val update : key -> diff -> value -> value Lwt.t
 
 end
@@ -27,6 +31,10 @@ module type T =
     type diff
 
     val get : key -> value Lwt.t
+  
+    val insert : key -> value -> unit Lwt.t 
+
     val update : key -> diff -> value Lwt.t
+
     val clear : unit -> unit
   end

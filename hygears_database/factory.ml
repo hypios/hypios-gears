@@ -1,3 +1,4 @@
+
 (*
  * hyGears - database
  *
@@ -6,6 +7,7 @@
  *)
 
 open Connection
+
 
 let put_rdf connection namegraph rdf = 
 
@@ -38,6 +40,7 @@ let put_rdf connection namegraph rdf =
       Curl.perform conn; 
       Curl.cleanup conn; 
       Buffer.contents result 
+
 
 
 let put_turtle connection namegraph turtle = 

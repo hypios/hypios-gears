@@ -49,6 +49,9 @@ module Make = functor (O: Signatures.V) ->
             cache#remove key ;
             cache#add key updated_value ; return updated_value
 
+    let insert key value = 
+      O.insert key value >>= fun _ -> return (cache#add key value)
+
     let clear () =
         cache#clear ()
 
