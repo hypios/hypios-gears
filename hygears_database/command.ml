@@ -16,6 +16,4 @@ let put_turtle connection namegraph turtle =
   Factory.put_turtle connection namegraph turtle 
   
 let exec_sparql connection query = 
-  Factory.exec_sparql connection query 
-
-   
+  Factory.exec_sparql connection query
