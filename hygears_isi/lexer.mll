@@ -1,8 +1,12 @@
 (* File lexer.mll *)
 {
   open Helper
+  open Signatures
   open Printf
   exception Eof
+
+  module Make = functor (Aggregator: AGGREGATOR) -> 
+    struct 
 }
 
 
@@ -21,7 +25,7 @@ rule lex_isi set = parse
   | "PT "        { 
                    let journal_type = glob_line "" lexbuf in 
 		   printf "Journal type reloaded: %s\n" journal_type ; 
-                   let article = lex_article ( Helper.append "PT" journal_type AttributesMap.empty ) "PT" lexbuf in
+                   let article = lex_article ( Aggregator.append "PT" journal_type Aggregator.empty ) "PT" lexbuf in
                    lex_isi (article :: set) lexbuf 
                 }
   | endline     { lex_isi set lexbuf }
@@ -38,9 +42,12 @@ and lex_article attrs current_key = parse
   | "ER"        { forget_line lexbuf; attrs}
   | key         { 
                   let key = Lexing.lexeme lexbuf in 
-                  let l = glob_line "" lexbuf in lex_article (Helper.append key l attrs) key lexbuf  }
+                  let l = glob_line "" lexbuf in lex_article (Aggregator.append key l attrs) key lexbuf  }
   | "  "        { 
-                  let l = glob_line "" lexbuf in lex_article (Helper.append current_key l attrs) current_key lexbuf  }                                     
+                  let l = glob_line "" lexbuf in lex_article (Aggregator.append current_key l attrs) current_key lexbuf  }                                     
   | _           { attrs }          
  
 
+{
+end
+}
