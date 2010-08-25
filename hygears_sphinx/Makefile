@@ -20,7 +20,7 @@ all: sphinx_stubs.o
 lib: sphinx_stubs.o hygears_sphinx.cmo hygears_sphinx.cmx 
 	ocamlmklib -o sphinx hygears_sphinx.cmo hygears_sphinx.cmx sphinx_stubs.o $(LIBS)
 
-test: sphinx_stubs.o test.o 
+test:  test.o 
 	gcc $^ $(LIBS) -o $@
 
 main: lib # Hardcore
@@ -29,7 +29,7 @@ main: lib # Hardcore
 clean:
 	rm -f *~
 	rm -f *.o
-	rm -f *.a
+	rm -f *.rm
 	rm -f *.cm*
 	rm -f *.so
 	rm -f test

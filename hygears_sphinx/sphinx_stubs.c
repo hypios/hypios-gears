@@ -69,6 +69,31 @@ value ocaml_sphinx_connect (value unit)
   CAMLreturn (alloc_sphinx_client (client)); 
 }
 
+value ocaml_sphinx_set_server (value client_ocaml, value host_ocaml, value port_ocaml) 
+{
+  CAMLparam3 (client_ocaml, host_ocaml, port_ocaml);
+  sphinx_client * client; 
+  const char *host; 
+  int port; 
+  sphinx_bool res; 
+
+  client = sphinx_client_val (client_ocaml);
+  host = String_val (host_ocaml);
+  port = Int_val (port_ocaml);
+  
+  res = sphinx_set_server (client, host, port) ;
+
+  if ( !res ) 
+    epic_fail ( "set_server failed: %s", sphinx_error(client) ); // Je **crois** qu'on retourne ds le runtime ocaml là
+  
+  CAMLreturn0; 
+}
+
+
+value value_of_int (int i) 
+{
+  return (Val_int (i));
+}
 
 value ocaml_sphinx_query (value client_ocaml, value index_ocaml, value query_ocaml) 
 {
@@ -76,6 +101,11 @@ value ocaml_sphinx_query (value client_ocaml, value index_ocaml, value query_oca
   sphinx_client * client; 
   sphinx_result * res;
   const char *query, *index;
+  int i; 
+
+  value res_ocaml ; 
+  value words_ocaml ;
+  value occurences_ocaml ; 
 
   client = sphinx_client_val (client_ocaml);
   index = String_val (index_ocaml);
@@ -86,46 +116,43 @@ value ocaml_sphinx_query (value client_ocaml, value index_ocaml, value query_oca
   if ( !res )
     epic_fail ( "query failed: %s", sphinx_error(client) ); // Je **crois** qu'on retourne ds le runtime ocaml là
   
-  printf ( "Query '%s' retrieved %d of %d matches in %d.%03d sec.\n",
-	   query, res->total, res->total_found, res->time_msec/1000, res->time_msec%1000 ); 
+  /* Triple check this part .. */
+
+  res_ocaml = caml_alloc(6, 0) ; 
+    
+  Store_field ( res_ocaml, 0, ( Val_int ( res->total ) ) );
+  Store_field ( res_ocaml, 1, ( Val_int ( res->total_found ) ) );
+  Store_field ( res_ocaml, 2, ( Val_int ( res->num_words ) ) );
+
+  words_ocaml = caml_alloc( res->num_words, 0);
   
-  CAMLreturn0; 
+  for ( i=0; i<res->num_words; i++ )
+    {
+      value wordinfo_ocaml ; 
+      wordinfo_ocaml = caml_alloc(3, 0) ; 
+      Store_field ( wordinfo_ocaml, 0, caml_copy_string ( res->words[i].word ) ) ;
+      Store_field ( wordinfo_ocaml, 1, ( Val_int ( res->words[i].hits ) ) ) ;
+      Store_field ( wordinfo_ocaml, 2, ( Val_int ( res->words[i].docs ) ) ) ;
+      Store_field ( words_ocaml, i, wordinfo_ocaml ) ;
+    }
+  
+  Store_field ( res_ocaml, 3, words_ocaml ) ;
+  Store_field ( res_ocaml, 4, Val_int ( res-> num_matches ) ) ;
+  
+  occurences_ocaml = caml_alloc ( res-> num_matches, 0)  ;
+  
+  for ( i=0; i<res->num_matches; i++ )
+    {
+      value occurence_ocaml ; 
+      occurence_ocaml = caml_alloc(2, 0) ;
+      
+      Store_field ( occurence_ocaml, 0, Val_int ( (int)sphinx_get_id ( res, i ) ) ) ;
+      Store_field ( occurence_ocaml, 1, Val_int ( (int)sphinx_get_weight ( res, i ) ) ) ;
+      
+      Store_field ( occurences_ocaml, i, occurence_ocaml ) ;
+    }
+  
+  Store_field ( res_ocaml, 5, occurences_ocaml ) ;
+      
+  CAMLreturn (res_ocaml); 
 }
-
-/*
-
-int main ()
-{
-	sphinx_client * client;
-
-		net_init ();
-
-	client = sphinx_create ( SPH_TRUE );
-	if ( !client )
-		die ( "failed to create client" );
-
-	test_query ( client, SPH_FALSE );
-	test_excerpt ( client );
-	test_update ( client, 75 );
-	test_update_mva ( client );
-	test_query ( client, SPH_FALSE );
-	test_keywords ( client );
-	test_query ( client, SPH_TRUE );
-
-	sphinx_open ( client );
-	test_update ( client, 688 );
-	test_update ( client, 252 );
-	test_query ( client, SPH_FALSE );
-	sphinx_cleanup ( client );
-	test_query ( client, SPH_FALSE );
-
-	sphinx_close ( client );
-
-	test_status ( client );
-
-	sphinx_destroy ( client );
-	
-	return 0;
-}
-
-*/
