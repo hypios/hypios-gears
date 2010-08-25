@@ -1,4 +1,11 @@
-module CharMap = Map.Make (Char)
+module InversedChar =
+  struct
+    type t = Char.t
+    let compare a b = Char.compare b a
+end
+
+module CharMap = Map.Make (InversedChar)
+
 
 module Make = functor (Data: Signatures.V) ->
   struct
