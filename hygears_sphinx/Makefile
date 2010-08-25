@@ -24,7 +24,7 @@ test:  test.o
 	gcc $^ $(LIBS) -o $@
 
 main: lib # Hardcore
-	ocamlc -custom sphinx_stubs.o main.ml hygears_sphinx.cmo -o $@ -cclib $(LIBS)
+	ocamlc -custom sphinx_stubs.o main.ml hygears_sphinx.cmo  -o $@ -cclib $(LIBS)
 
 clean:
 	rm -f *~

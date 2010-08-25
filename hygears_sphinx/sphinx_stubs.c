@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 // OCAML 
 #include <caml/mlvalues.h>
 #include <caml/memory.h>
@@ -84,7 +85,7 @@ value ocaml_sphinx_set_server (value client_ocaml, value host_ocaml, value port_
   res = sphinx_set_server (client, host, port) ;
 
   if ( !res ) 
-    epic_fail ( "set_server failed: %s", sphinx_error(client) ); // Je **crois** qu'on retourne ds le runtime ocaml l‡
+    epic_fail ( "set_server failed: %s", sphinx_error(client) ); // Je **crois** qu'on retourne ds le runtime ocaml l√†
   
   CAMLreturn0; 
 }
@@ -93,6 +94,52 @@ value ocaml_sphinx_set_server (value client_ocaml, value host_ocaml, value port_
 value value_of_int (int i) 
 {
   return (Val_int (i));
+}
+
+
+value ocaml_sphinx_set_field_weights (value client_ocaml, value fields_number_ocaml, value field_names_ocaml, value field_weights_ocaml)
+{
+  CAMLparam4 (client_ocaml, fields_number_ocaml, field_names_ocaml, field_weights_ocaml); 
+  
+  sphinx_client * client ; 
+  int fields_number ;
+
+  char ** field_names; 
+  int * field_weights;
+  
+  int i ;
+
+  client = sphinx_client_val (client_ocaml);
+ 
+  fields_number = Int_val (fields_number_ocaml) ;
+  
+  field_names = (char **) malloc (sizeof (char *) * fields_number); 
+  
+  field_weights = (int *) malloc (sizeof (int) * fields_number); 
+  
+  for ( i=0; i<fields_number; i++ )
+    {
+      field_names[i] = String_val (Field(field_names_ocaml, i)) ;
+      field_weights[i] = Int_val (Field(field_weights_ocaml, i)) ;
+    }
+  
+  sphinx_set_field_weights ( client, fields_number, field_names, field_weights );
+  
+  CAMLreturn0;
+}
+
+value ocaml_sphinx_set_select (value client_ocaml, value select_ocaml)
+{
+  CAMLparam2 (client_ocaml, select_ocaml); 
+  sphinx_client * client;
+  char * select ; 
+  
+  client = sphinx_client_val (client_ocaml);
+  select = String_val (select_ocaml) ; 
+  
+  sphinx_set_select ( client, select );
+  
+  CAMLreturn0;
 }
 
 value ocaml_sphinx_query (value client_ocaml, value index_ocaml, value query_ocaml) 
@@ -114,7 +161,7 @@ value ocaml_sphinx_query (value client_ocaml, value index_ocaml, value query_oca
   res = sphinx_query ( client, query, index, NULL );
 
   if ( !res )
-    epic_fail ( "query failed: %s", sphinx_error(client) ); // Je **crois** qu'on retourne ds le runtime ocaml l‡
+    epic_fail ( "query failed: %s", sphinx_error(client) ); // Je **crois** qu'on retourne ds le runtime ocaml l√†
   
   /* Triple check this part .. */
 
