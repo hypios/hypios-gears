@@ -11,28 +11,31 @@ all: lib
 %.o: %.c
 	gcc $(INCLUDES) $^ -c -o $@ 
 
-%.cmo: %.ml
-	ocamlfind ocamlc $^ -c 
+%.cmo: %.mlpack
+	ocamlbuild $@
 
-%.cmx: %.ml
-	ocamlfind ocamlopt $^ -c 
+%.cmx: %.mlpack
+	ocamlbuild $@
 
-lib: sphinx_stubs.o hygears_sphinx.cmo hygears_sphinx.cmx 
-	ocamlmklib -o sphinx hygears_sphinx.cmo hygears_sphinx.cmx sphinx_stubs.o $(LIBS)
+lib: hygears_sphinx.cmo sphinx_stubs.o
+	ocamlmklib -o hygears_sphinx _build/hygears_sphinx.cmo sphinx_stubs.o -lsphinxclient
+
+
 
 test:  test.o 
 	gcc $^ $(LIBS) -o $@
 
 main: lib # Hardcore
-	ocamlc -custom sphinx_stubs.o main.ml hygears_sphinx.cmo  -o $@ -cclib $(LIBS)
+	ocamlc -custom sphinx_stubs.o main.ml hygears_sphinx.cmo -o $@ -cclib $(LIBS)
 
 install: 
-	ocamlfind install hygears_sphinx META hygears_sphinx.cmi hygears_sphinx.cmo hygears_sphinx.cmx sphinx.a dllsphinx.so libsphinx.a
+	ocamlfind install hygears_sphinx META _build/hygears_sphinx.cmi hygears_sphinx.cma *.a *.so
 
 remove: 
 	ocamlfind remove hygears_sphinx
 
 clean:
+	ocamlbuild -clean
 	rm -f *~
 	rm -f *.o
 	rm -f *.rm
