@@ -9,11 +9,10 @@ let _ =
   for t = 0 to 0 do 
     
     Hygears_sphinx.Command.set_field_weights connection 2 [| "title"; "content" |] [| 21; 1000 |]; 
-    let result = Hygears_sphinx.Command.query connection "test1" "test" in 
+    let result = Hygears_sphinx.Command.query connection "test1" "test and a second" in 
     printf "%d %d\n" result.total result.total_found ; flush stdout; 
     
-  
-
+ 
   Array.iter (fun wordinfo -> printf "%s found %d times in %d docs\n" wordinfo.word wordinfo.docs wordinfo.hits)
    result.words ;
 

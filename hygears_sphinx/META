@@ -1,0 +1,6 @@
+name="hygears_sphinx"
+version="0.0.1"
+description="Hypios gears - sphinx"
+requires="ocsigen"
+archive(byte) = "hygears_sphinx.cmo"
+archive(native) = "hygears_sphinx.cmx"

@@ -6,7 +6,7 @@ SPHINX_LIB_STATIC = /usr/local/lib/libsphinxclient.a ## Qd qqun a deux minutes, 
 INCLUDES = -I $(SPHINX_INCLUDE) -I `ocamlc -where`
 LIBS = $(SPHINX_LIB_STATIC)
 
-all: sphinx_stubs.o
+all: lib
 
 %.o: %.c
 	gcc $(INCLUDES) $^ -c -o $@ 
@@ -26,11 +26,18 @@ test:  test.o
 main: lib # Hardcore
 	ocamlc -custom sphinx_stubs.o main.ml hygears_sphinx.cmo  -o $@ -cclib $(LIBS)
 
+install: 
+	ocamlfind install hygears_sphinx META hygears_sphinx.cmi hygears_sphinx.cmo hygears_sphinx.cmx sphinx.a dllsphinx.so libsphinx.a
+
+remove: 
+	ocamlfind remove hygears_sphinx
+
 clean:
 	rm -f *~
 	rm -f *.o
 	rm -f *.rm
 	rm -f *.cm*
 	rm -f *.so
+	rm -f *.a
 	rm -f test
 	rm -f main
