@@ -1,0 +1,6 @@
+name="hygears_isi"
+version="0.0.1"
+description="Hypios gears - isi"
+requires="ocsigen"
+archive(byte) = "hygears_isi.cmo"
+archive(native) = "hygears_isi.cmx"
