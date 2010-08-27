@@ -103,7 +103,7 @@ value ocaml_sphinx_set_field_weights (value client_ocaml, value fields_number_oc
   
   sphinx_client * client ; 
   int fields_number ;
-
+  
   char ** field_names; 
   int * field_weights;
   
@@ -148,8 +148,11 @@ value ocaml_sphinx_query (value client_ocaml, value index_ocaml, value query_oca
   sphinx_client * client; 
   sphinx_result * res;
   const char *query, *index;
-  int i; 
+  int i, j, k; 
 
+  
+  unsigned int * mva;
+  
   value res_ocaml ; 
   value words_ocaml ;
   value occurences_ocaml ; 
@@ -191,12 +194,69 @@ value ocaml_sphinx_query (value client_ocaml, value index_ocaml, value query_oca
   for ( i=0; i<res->num_matches; i++ )
     {
       value occurence_ocaml ; 
-      occurence_ocaml = caml_alloc(2, 0) ;
+      occurence_ocaml = caml_alloc(3, 0) ;
       
       Store_field ( occurence_ocaml, 0, Val_int ( (int)sphinx_get_id ( res, i ) ) ) ;
       Store_field ( occurence_ocaml, 1, Val_int ( (int)sphinx_get_weight ( res, i ) ) ) ;
       
-      Store_field ( occurences_ocaml, i, occurence_ocaml ) ;
+      // Create attributes array
+       value attributes_ocaml ;
+       attributes_ocaml = caml_alloc( res->num_attrs, 0) ;
+       
+       for ( j=0; j<res->num_attrs; j++ )
+	 {
+	   value attribute_ocaml ;
+	   attribute_ocaml = caml_alloc(2, 0) ;
+	   Store_field ( attribute_ocaml, 0, caml_copy_string ( res->attr_names[j] ) ) ; 
+
+	   switch ( res->attr_types[j] )
+	     {
+	     case SPH_ATTR_MULTI | SPH_ATTR_INTEGER:
+	       
+	       mva = sphinx_get_mva ( res, i, j );
+	       
+	       value mva_ocaml ; 
+	       mva_ocaml = caml_alloc( (int)mva[0], 0) ;  //  O = IntArray
+    	       
+	       for ( k=0; k<(int)mva[0]; k++ )
+		 Store_field ( mva_ocaml, k, caml_copy_int32( mva[1+k] ) ) ; 
+
+	       Store_field ( attribute_ocaml, 1, mva_ocaml ) ; 
+
+	       break; 
+	     case SPH_ATTR_FLOAT:
+	       {
+		 value float_ocaml ;
+		 float_ocaml = caml_alloc(1, 1) ; // 1  = Float 
+		 Store_field ( float_ocaml, 0, caml_copy_double(  sphinx_get_float ( res, i, j ) ) ) ; 
+		 Store_field ( attribute_ocaml, 1, float_ocaml ) ;
+		 break;
+	       }
+	     case SPH_ATTR_STRING:	
+	       {
+		 value string_ocaml; 
+		 string_ocaml = caml_alloc (1, 2) ; // 2 = String 
+		 Store_field ( string_ocaml, 0, caml_copy_string( sphinx_get_string ( res, i, j ) ) ) ; 
+		 Store_field ( attribute_ocaml, 1, string_ocaml ) ; 
+		 break; 
+	       }
+	     default:
+	       {
+		 value int_ocaml; 
+		 int_ocaml = caml_alloc (1, 3) ; // 3 = String 
+		 Store_field ( int_ocaml, 0,  caml_copy_int32(  (unsigned int)sphinx_get_int ( res, i, j ) ) ) ; 
+		 Store_field ( attribute_ocaml, 1, int_ocaml ) ; 
+		 break;
+	       }
+	       }
+
+	   Store_field ( attributes_ocaml, j, attribute_ocaml);  
+	   
+	 }
+
+       Store_field ( occurence_ocaml, 2, attributes_ocaml ); 
+            
+       Store_field ( occurences_ocaml, i, occurence_ocaml ) ;
     }
   
   Store_field ( res_ocaml, 5, occurences_ocaml ) ;

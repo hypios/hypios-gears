@@ -16,10 +16,20 @@ type sphinx_wordinfo =
       hits : int ; 
     }
 
+
+type content = IntArray of Int32.t array | Float of float | String of string | Int of Int32.t 
+
+type attributes =
+    {
+      name : string ; 
+      content : content ;
+    }
+
 type occurence = 
     {
       doc_id : int ; 
-      weight : int ; 
+      weight : int ;
+      attributes : attributes array ;
     }
 
 type sphinx_result = 
