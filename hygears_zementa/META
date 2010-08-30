@@ -1,0 +1,6 @@
+name="hygears_zementa"
+version="0.0.1"
+description="Hypios gears - zementa"
+requires="ocsigen"
+archive(byte) = "hygears_zementa.cmo"
+archive(native) = "hygears_zementa.cmx"
