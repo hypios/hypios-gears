@@ -16,12 +16,23 @@ open Types
 open Misc
 
 
+module SimpleAggregator = 
+  struct 
+    type t = (string * string) list 
+    let empty = []
+    let append key value attributes = (key, value) :: attributes 
+  end
+
+
+module Parser = Factory.Make (SimpleAggregator)
+
 let retrieve_from_file file = 
-  let input_channel = open_in file in 
-  let source = `Channel input_channel in
-  let input = make_input source in 
-  Xml.parse input ; 
-  close_in input_channel 
+  let articles = Parser.analyse file in 
+  debug "@@@ Number of articles: %d\n" (List.length articles) ; 
+  List.iter (fun article -> 
+    debug "@@@ Attributes of the article: " ; 
+    List.iter (fun (k,v) -> debug "%s : %s, " k v ) article ; 
+    debug "\n") articles 
      
 let retrieve_from_server term = 
   let prerequest = Effector_standalone.prerequest term in 

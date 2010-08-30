@@ -1,4 +1,5 @@
-all: byte native
+all: 
+	ocamlbuild hygears_pubmed.cmo
 
 byte:
 	ocamlbuild main.byte
@@ -11,6 +12,9 @@ install:
 
 remove: 
 	ocamlfind remove hygears_pubmed
+
+test: 
+	ocamlbuild test.byte
 
 clean:
 	ocamlbuild -clean
