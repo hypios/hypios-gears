@@ -4,7 +4,7 @@ let (>>>) f g = g f
 
 let debug fmt = 
   Printf.ksprintf (fun s -> print_string s; flush stdout) fmt
-
+    
 open Xmlm
 
 let extract_information xml = 
