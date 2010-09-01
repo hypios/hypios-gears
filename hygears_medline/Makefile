@@ -1,5 +1,5 @@
 all: 
-	ocamlbuild hygears_pubmed.cmo
+	ocamlbuild hygears_medline.cmo
 
 byte:
 	ocamlbuild main.byte
@@ -8,10 +8,10 @@ native:
 	ocamlbuild main.native
 
 install: 
-	ocamlfind install hygears_pubmed META _build/hygears_pubmed.cm*
+	ocamlfind install hygears_medline META _build/hygears_medline.cm*
 
 remove: 
-	ocamlfind remove hygears_pubmed
+	ocamlfind remove hygears_medline
 
 test: 
 	ocamlbuild test.byte
