@@ -14,6 +14,7 @@ module Mailer = struct
 			("recipient", recipient);
 			("subject", subject);
 			("from", from);
+			(text_param_name, text);
 		] in
 		let issome lst name = function
 			| None -> lst
@@ -22,11 +23,17 @@ module Mailer = struct
 		let params = issome params "bcc" bcc in
 		let params = issome params "reply_to" reply_to in
 
-		let (url, params) = match mailing_list with
+		let (uri, params) = match mailing_list with
 			| None -> ("/mailer", params)
 			| Some l -> ("/mailer/to_list", ("list_name", l) :: params)
 		in
-		Effector.send connection params ...... (* TODO *)
+
+		let request = {
+			Effector.uri = uri;
+			Effector.request_method = Effector.POST;
+		} in
+
+		Effector.send connection request params
 
 	let message = send "body"
 

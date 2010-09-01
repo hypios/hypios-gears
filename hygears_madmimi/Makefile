@@ -1,11 +1,11 @@
 all:
-	ocamlbuild hygears_zementa.cmo
+	ocamlbuild hygears_madmimi.cmo
 
 install: 
-	ocamlfind install hygears_zementa META _build/hygears_zementa.cm*
+	ocamlfind install hygears_madmimi META _build/hygears_madmimi.cm*
 
 remove: 
-	ocamlfind remove hygears_zementa
+	ocamlfind remove hygears_madmimi
 
 test: 
 	ocamlbuild main.byte

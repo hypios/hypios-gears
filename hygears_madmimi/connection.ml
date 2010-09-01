@@ -6,22 +6,15 @@
  *)
 
 type t = 
-    {
-      host : string ; 
+	{
+		host : string;
+		username : string;
+		api_key : string;
+	}
 
-      username : string ;
-      api_key : string ; 
-    }
-
-let create api_key = 
-  {
-    host = "api.madmimi.com" ;
-
-    api_key = api_key ; 
-  }
-
-let params connection =
-	[
-		("username", connection.username);
-		("api_key", connection.api_key);
-	]
+let create username api_key =
+	{
+		host = "api.madmimi.com";
+		username = username;
+		api_key = api_key;
+	}
