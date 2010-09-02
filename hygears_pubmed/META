@@ -1,6 +1,0 @@
-name="hygears_pubmed"
-version="0.0.1"
-description="Hypios gears - medline"
-requires="ocsigen"
-archive(byte) = "hygears_medline.cmo"
-archive(native) = "hygears_medline.cmx"
