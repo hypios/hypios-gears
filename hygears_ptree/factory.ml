@@ -82,6 +82,11 @@ module Make = functor (Data: Signatures.V) ->
                     try search suffix (CharMap.find path.[0] children)
                     with Not_found -> empty
 
+
+    let head tree = 
+      match tree with 
+	  Node (e, _) -> e
+
     let map _ _ = failwith "todo"
     
     let rec fold f acc tree =
