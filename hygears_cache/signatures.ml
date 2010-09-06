@@ -18,7 +18,7 @@ sig
 
   val create : key -> value Lwt.t (* aka load *)
     
-  val insert : key -> value -> unit Lwt.t  (* aka save *)
+  val insert : key -> value -> key Lwt.t  (* aka save *)
   
   val update : key -> diff -> value -> value Lwt.t
 
