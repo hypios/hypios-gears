@@ -18,4 +18,5 @@ module type T =
     val map : (e -> e) -> t -> t
     val fold : ('a -> e -> 'a) -> 'a -> t -> 'a
 
+    val head : t -> e list 
   end
