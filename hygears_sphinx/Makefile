@@ -1,7 +1,7 @@
 ## Hand made Makefile
 
-SPHINX_INCLUDE = /Users/hypios/pub/sphinx-1.10-beta/api/libsphinxclient/ 
-SPHINX_LIB_STATIC = /usr/local/lib/libsphinxclient.a ## Qd qqun a deux minutes, builder en dynamique ..
+SPHINX_INCLUDE = /Users/marcsimon/Desktop/sphinx-1.10-beta/api/libsphinxclient 
+SPHINX_LIB_STATIC = /usr/lib/libsphinxclient.a ## Qd qqun a deux minutes, builder en dynamique ..
 
 INCLUDES = -I $(SPHINX_INCLUDE) -I `ocamlc -where`
 LIBS = $(SPHINX_LIB_STATIC)
