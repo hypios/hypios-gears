@@ -57,4 +57,4 @@ module Make = functor (O: Signatures.V) ->
     let clear () =
         cache#clear ()
 
-        end
+end
