@@ -11,7 +11,11 @@ let preferences ?(format = "json") connection () =
   Effector.send connection [
     "method", "zemanta.preferences" ; 
     "api_key", connection.api_key ; 
-    "format", format 
+    "format", format; 
+    "return_images", "0"; 
+    "return_categories", "0"; 
+    "return_rdf_links", "0";
+    "articles_limit", "0"; 
   ]
 
 let suggests ?(format = "json") connection text = 
@@ -19,7 +23,11 @@ let suggests ?(format = "json") connection text =
     "method", "zemanta.suggest" ; 
     "api_key", connection.api_key ; 
     "text", text ;
-    "format", format 
+    "format", format ;
+    "return_images", "0"; 
+    "return_categories", "0"; 
+    "return_rdf_links", "0";
+    "articles_limit", "1"; 
   ]
 
 
