@@ -142,6 +142,24 @@ value ocaml_sphinx_set_select (value client_ocaml, value select_ocaml)
   CAMLreturn0;
 }
 
+value ocaml_sphinx_set_limits (value client_ocaml, value offset_ocaml, value limit_ocaml, value max_matches_ocaml, value cutoff_ocaml)
+{
+  CAMLparam5 (client_ocaml, offset_ocaml, limit_ocaml, max_matches_ocaml, cutoff_ocaml); 
+  sphinx_client * client;
+  int offset, limit, max_matches, cutoff ;
+  
+  client = sphinx_client_val (client_ocaml);
+
+  offset = Int_val (offset_ocaml) ; 
+  limit = Int_val (limit_ocaml) ; 
+  max_matches = Int_val (max_matches_ocaml) ; 
+  cutoff = Int_val (cutoff_ocaml) ; 
+   
+  if (!sphinx_set_limits (client, offset, limit, max_matches, cutoff)) epic_fail ( "set_server failed: %s", sphinx_error(client) );
+ 
+  CAMLreturn0;
+}
+
 value ocaml_sphinx_query (value client_ocaml, value index_ocaml, value query_ocaml) 
 {
   CAMLparam3 (client_ocaml, index_ocaml, query_ocaml);
