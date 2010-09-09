@@ -5,3 +5,6 @@ _build*
 *.conf
 .DS*
 *.txt
+*.so
+*.a
+*.o
