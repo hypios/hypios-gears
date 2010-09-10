@@ -13,7 +13,4 @@ let warning fmt =
 let error fmt = 
   Printf.ksprintf (fun s -> Ocsigen_messages.errlog s) fmt
 
-let debug fmt = 
-  Printf.ksprintf (fun s -> print_string s; flush stdout) fmt
-
-
+  

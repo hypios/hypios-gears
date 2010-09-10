@@ -8,21 +8,33 @@
 open Lwt 
 open Misc
 
+type date = { year: int ; month: int; day: int } with orm
+
+let d2date d = 
+  CalendarLib.Date.make d.year d.month d.day 
+
+let date2d date = 
+ {
+   year = CalendarLib.Date.year date ; 
+   month = CalendarLib.Date.month date >>> CalendarLib.Date.int_of_month ; 
+   day = CalendarLib.Date.day_of_month date ; 
+ }
+  
 module Period = 
   struct 
     type t =  
 	{  
-	  date : CalendarLib.Printer.Date.t ;
+	  date : date ;
 	  moment : string ; 
-	}
+	} with orm
 
     let compare p1 p2 =
-      match CalendarLib.Date.compare p1.date p2.date with 
+      match CalendarLib.Date.compare (d2date p1.date) (d2date p2.date) with 
 	| 0 -> String.compare p1.moment p2.moment
 	| c -> c
 
     let to_string p = 
-      (CalendarLib.Printer.Date.sprint "%A, %B %d, %Y " p.date) ^ p.moment
+      (CalendarLib.Printer.Date.sprint "%A, %B %d, %Y " (d2date p.date)) ^ p.moment
 	
   end
 
