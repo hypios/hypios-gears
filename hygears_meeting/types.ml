@@ -11,7 +11,7 @@ open Lwt
 open Misc
 
 type user_id = int with orm
-type meeting_id = int with orm 
+type meeting_id = int64 with orm 
 
 type date = { year: int ; month: int; day: int } with orm
 
@@ -37,18 +37,18 @@ let period_to_string p =
 type status = Accepted | Rejected | Unknown (* Used as support type, not core *)
 
 type participation = {
-  accepted_ranges : period list ; 
-  rejected_ranges : period list ; 
+  mutable accepted_ranges : period list ; 
+  mutable rejected_ranges : period list ; 
 } with orm 
 
 
 type meeting = {
-  id : meeting_id ; 
-  title : string ; 
-  description : string ;
+  mutable id : meeting_id ; 
+  mutable title : string ; 
+  mutable description : string ;
   owner : user_id ; 
-  participants : (user_id * participation) list ;
-  ranges : period list ;
+  mutable participants : (user_id * participation) list ;
+  mutable ranges : period list ;
 } with orm  
     
 

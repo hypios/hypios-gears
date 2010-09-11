@@ -15,7 +15,7 @@ let uid () =
 
 let create title description owner = 
   {
-    id = 0 ; 
+    id = 0L ; 
     title = title ;
     description = description ;
     owner = owner ;
@@ -25,35 +25,35 @@ let create title description owner =
   }
   
 let edit_title meeting title = 
-  { meeting with title = title }
+  meeting.title <- title; meeting 
 
 let edit_description meeting description = 
-  { meeting with description = description }
+  meeting.description <- description ; meeting 
 
 let append_range meeting range = 
-  { meeting with ranges = range :: meeting.ranges }
+  meeting.ranges <- range :: meeting.ranges ; meeting 
+  
 
 let remove_range meeting range = 
-  { meeting with ranges = range :: meeting.ranges }
+  meeting.ranges <- range :: meeting.ranges ; meeting 
 
 let add_participant meeting participant = 
-  { meeting with participants = (participant, { accepted_ranges = []; rejected_ranges = [] }) :: meeting.participants }
+  meeting.participants <- (participant, { accepted_ranges = []; rejected_ranges = [] }) :: meeting.participants ; meeting
 
 let remove_participant meeting participant = 
-  { meeting with participants = List.filter (fun (p,_) -> p <> participant) meeting.participants }
+  meeting.participants <- List.filter (fun (p,_) -> p <> participant) meeting.participants ; meeting
 
 let accept_range meeting participant range = 
   let _, participation = List.find (fun (p,_) -> p = participant) meeting.participants in
-  let participation2 = { participation with accepted_ranges = range :: participation.accepted_ranges } in
-  let participation3 = { participation2 with rejected_ranges = List.filter (fun r -> r.date <> range.date && r.moment <> range.moment) participation2.rejected_ranges } in
-  { meeting with participants = (participant, participation3) :: meeting.participants } 
-
-let reject_range meeting participant range = 
+  participation.accepted_ranges <- range :: participation.accepted_ranges ; 
+  participation.rejected_ranges <- List.filter (fun r -> r.date <> range.date && r.moment <> range.moment) participation.rejected_ranges ; 
+  meeting 
+  
+let reject_range meeting participant range =
   let _, participation = List.find (fun (p,_) -> p = participant) meeting.participants in
-  let participation2 = { participation with accepted_ranges = List.filter (fun r -> r.date <> range.date && r.moment <> range.moment) participation.rejected_ranges } in
-  let participation3 = { participation2 with rejected_ranges = range :: participation2.accepted_ranges } in
-  { meeting with participants = (participant, participation3) :: meeting.participants } 
-
+  participation.accepted_ranges <- List.filter (fun r -> r.date <> range.date && r.moment <> range.moment) participation.accepted_ranges  ; 
+  participation.rejected_ranges <- range :: participation.accepted_ranges ;
+  meeting 
 
 
 (* Retrieval methods *)
