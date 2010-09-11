@@ -16,6 +16,7 @@ let uid () =
 let create title description owner = 
 
   {
+    id = 0 ; 
     title = title ;
     description = description ;
     owner = owner ;

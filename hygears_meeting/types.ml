@@ -55,7 +55,10 @@ type participation = {
   rejected_ranges : PeriodSet.t ;
 }
 
+type meeting_id = int with orm 
+
 type meeting = {
+  id : meeting_id ; 
   title : string ; 
   description : string ;
   owner : UserId.t ; 
