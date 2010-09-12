@@ -57,23 +57,65 @@ let reject_range meeting participant range =
 
 
 (* Retrieval methods *)
+
 let find_concensus meeting = 
   List.fold_left (fun remaining (_, participation) ->
     List.fold_left (fun remaining range -> 
+      (* <> ??? *)
       List.filter (fun r -> r.date <> range.date && r.moment <> range.moment) remaining)
       remaining participation.rejected_ranges
   ) meeting.ranges meeting.participants 
- 	
-	
-(* Simple test function for doodle traversal *)
-(*let check_status meeting user range = 
-  let participation = ParticipantMap.find user meeting.participants in 
-  match PeriodSet.mem range participation.accepted_ranges with 
-      true -> Accepted 
-    | false -> 
-      match PeriodSet.mem range participation.rejected_ranges with 
-	  true -> Rejected
-	| false -> Unknown 
+
+
+
+module Date = 
+  struct 
+    type t = date 
+    let compare d1 d2 = 
+      match d1.year - d2.year with 
+	  0 -> 
+	    ( match d1.month - d2.month with 
+		0 -> d1.day - d2.day 
+	      | c -> c )
+	| c -> c 
+  end
+
+module DateMap = Map.Make (Date)
+
+module Range = 
+  struct 
+    type t = period 
+    let compare r1 r2 =
+      
+      match Date.compare r1.date r2.date with 
+	  0 -> String.compare r1.moment r2.moment 
+	| c -> c 
+	    
+	    
+  end
+
+module RangeMap = Map.Make (Range) 
+
+let find_concensus meeting  = 
+  
+  let preferences_map = List.fold_left (fun m (_, participation) -> 
     
+    let m' = List.fold_left (fun acc range -> 
+      let weight = try RangeMap.find range acc with Not_found -> 0 in
+      RangeMap.add range (weight-1) acc 
+    ) m participation.rejected_ranges in 
+
+ 
+    let m'' = List.fold_left (fun acc range -> 
+      let weight = try RangeMap.find range acc with Not_found -> 0 in
+      RangeMap.add range (weight+1) acc 
+    ) m' participation.accepted_ranges in 
     
-*)
+    m''
+
+  ) (List.fold_left (fun acc range -> RangeMap.add range 0 acc ) RangeMap.empty meeting.ranges) meeting.participants in 
+
+  let preferences_list = RangeMap.fold (fun range weight acc -> (range, weight) :: acc) preferences_map [] in
+
+  List.sort (fun (_, w1) (_, w2) -> w1 - w2) preferences_list 
+    

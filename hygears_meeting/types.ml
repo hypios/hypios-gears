@@ -50,5 +50,13 @@ type meeting = {
   mutable participants : (user_id * participation) list ;
   mutable ranges : period list ;
 } with orm  
+
+
+let range_equal r1 r2 = 
+  r1.moment = r2.moment 
+  && r1.date.year = r2.date.year 
+    && r1.date.month = r2.date.month
+      && r1.date.day = r2.date.day
+
     
 
