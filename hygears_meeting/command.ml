@@ -14,76 +14,123 @@ let uid () =
   
 
 let create title description owner = 
-
   {
-    id = 0 ; 
+    id = 0L ; 
     title = title ;
     description = description ;
     owner = owner ;
 
-    ranges = PeriodSet.empty ; 
-    participants = ParticipantMap.empty 
+    ranges = [] ; 
+    participants = [] ; 
+    
+    chosen_date = { date = 
+                    { year = 0;
+                      month = 0;
+                      day = 0 };
+                    moment = "" };
+    is_open = true ;
   }
   
 let edit_title meeting title = 
-  { meeting with title = title }
+  meeting.title <- title; meeting 
 
 let edit_description meeting description = 
-  { meeting with description = description }
+  meeting.description <- description ; meeting 
 
 let append_range meeting range = 
-  { meeting with ranges = PeriodSet.add range meeting.ranges }
+  meeting.ranges <- range :: meeting.ranges ; meeting 
+  
+let set_chosen_date meeting range =
+  meeting.chosen_date <- range ; meeting
+  
+let set_open meeting =
+  meeting.is_open <- true ; meeting
+  
+let set_closed meeting =
+  meeting.is_open <- false ; meeting
 
 let remove_range meeting range = 
-  { meeting with ranges = PeriodSet.remove range meeting.ranges }
+  meeting.ranges <- range :: meeting.ranges ; meeting 
 
 let add_participant meeting participant = 
-  { meeting with participants = ParticipantMap.add participant { accepted_ranges = PeriodSet.empty; rejected_ranges = PeriodSet.empty } meeting.participants }
+  meeting.participants <- (participant, { accepted_ranges = []; rejected_ranges = [] }) :: meeting.participants ; meeting
 
 let remove_participant meeting participant = 
-  { meeting with participants = ParticipantMap.remove participant meeting.participants }
+  meeting.participants <- List.filter (fun (p,_) -> p <> participant) meeting.participants ; meeting
 
 let accept_range meeting participant range = 
-  let participation = ParticipantMap.find participant meeting.participants in
-  let participation = { participation with accepted_ranges = PeriodSet.add range participation.accepted_ranges } in
-  let participation = { participation with rejected_ranges = PeriodSet.remove range participation.rejected_ranges } in
-  { meeting with participants = ParticipantMap.add participant participation meeting.participants } 
-
-let reject_range meeting participant range = 
-  let participation = ParticipantMap.find participant meeting.participants in
-  let participation = { participation with accepted_ranges = PeriodSet.remove range participation.accepted_ranges } in
-  let participation = { participation with rejected_ranges = PeriodSet.add range participation.rejected_ranges } in
-  { meeting with participants = ParticipantMap.add participant participation meeting.participants } 
-
-let display_participation meeting participant = 
-  let participation = ParticipantMap.find participant meeting.participants in
-  PeriodSet.iter (fun p -> Printf.printf "%s\n" (Period.to_string p)) participation.accepted_ranges ;
-  PeriodSet.iter (fun p -> Printf.printf "%s\n" (Period.to_string p)) participation.rejected_ranges 
+  let _, participation = List.find (fun (p,_) -> p = participant) meeting.participants in
+  participation.accepted_ranges <- range :: participation.accepted_ranges ; 
+  participation.rejected_ranges <- List.filter (fun r -> r.date <> range.date && r.moment <> range.moment) participation.rejected_ranges ; 
+  meeting
   
+let reject_range meeting participant range =
+  let _, participation = List.find (fun (p,_) -> p = participant) meeting.participants in
+  participation.accepted_ranges <- List.filter (fun r -> r.date <> range.date && r.moment <> range.moment) participation.accepted_ranges  ; 
+  participation.rejected_ranges <- range :: participation.accepted_ranges ;
+  meeting
 
 
 (* Retrieval methods *)
-let find_concensus ?(strong=false) meeting = 
-  match strong with 
-    | false -> 
-      ParticipantMap.fold (fun _ v acc -> PeriodSet.diff acc v.rejected_ranges) meeting.participants meeting.ranges
-    | true -> 
-      ParticipantMap.fold (fun _ v acc -> PeriodSet.inter acc v.accepted_ranges) meeting.participants meeting.ranges
 
-(* Simple test function for doodle traversal *)
- 
-let display_ranges meeting = PeriodSet.iter (fun p -> Printf.printf "%s\n" (Period.to_string p)) meeting.ranges  
+let find_concensus meeting = 
+  List.fold_left (fun remaining (_, participation) ->
+    List.fold_left (fun remaining range -> 
+      (* <> ??? *)
+      List.filter (fun r -> r.date <> range.date && r.moment <> range.moment) remaining)
+      remaining participation.rejected_ranges
+  ) meeting.ranges meeting.participants 
 
-let display_participants meeting = 
-  ParticipantMap.iter (fun user participation -> ()) meeting.participants
 
-let check_status meeting user range = 
-  let participation = ParticipantMap.find user meeting.participants in 
-  match PeriodSet.mem range participation.accepted_ranges with 
-      true -> Accepted 
-    | false -> 
-      match PeriodSet.mem range participation.rejected_ranges with 
-	  true -> Rejected
-	| false -> Unknown 
+
+module Date = 
+  struct 
+    type t = date 
+    let compare d1 d2 = 
+      match d1.year - d2.year with 
+	  0 -> 
+	    ( match d1.month - d2.month with 
+		0 -> d1.day - d2.day 
+	      | c -> c )
+	| c -> c 
+  end
+
+module DateMap = Map.Make (Date)
+
+module Range = 
+  struct 
+    type t = period 
+    let compare r1 r2 =
+      
+      match Date.compare r1.date r2.date with 
+	  0 -> String.compare r1.moment r2.moment 
+	| c -> c 
+	    
+	    
+  end
+
+module RangeMap = Map.Make (Range) 
+
+let find_concensus meeting  = 
+  
+  let preferences_map = List.fold_left (fun m (_, participation) -> 
     
+    let m' = List.fold_left (fun acc range -> 
+      let weight = try RangeMap.find range acc with Not_found -> 0 in
+      RangeMap.add range (weight-1) acc 
+    ) m participation.rejected_ranges in 
+
+ 
+    let m'' = List.fold_left (fun acc range -> 
+      let weight = try RangeMap.find range acc with Not_found -> 0 in
+      RangeMap.add range (weight+1) acc 
+    ) m' participation.accepted_ranges in 
+    
+    m''
+
+  ) (List.fold_left (fun acc range -> RangeMap.add range 0 acc ) RangeMap.empty meeting.ranges) meeting.participants in 
+
+  let preferences_list = RangeMap.fold (fun range weight acc -> (range, weight) :: acc) preferences_map [] in
+
+  List.sort (fun (_, w1) (_, w2) -> w1 - w2) preferences_list 
     
