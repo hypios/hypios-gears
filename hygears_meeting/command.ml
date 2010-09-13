@@ -50,7 +50,6 @@ let accept_range meeting participant range =
   { meeting with participants = ParticipantMap.add participant participation meeting.participants } 
 
 let reject_range meeting participant range = 
-  debug "@@@ Rejecting the range %s for participant %s\n" (Period.to_string range) (string_of_int participant) ;
   let participation = ParticipantMap.find participant meeting.participants in
   let participation = { participation with accepted_ranges = PeriodSet.remove range participation.accepted_ranges } in
   let participation = { participation with rejected_ranges = PeriodSet.add range participation.rejected_ranges } in
