@@ -31,7 +31,7 @@ let find_packages () =
 let find_syntaxes () = ["camlp4o"; "camlp4r"]
 
 (* ocamlfind command *)
-let ocamlfind x = S[A"ocamlfind"; x]
+let ocamlfind x = S[A"ocamlducefind"; x]
 
 let _ = dispatch begin function
    | Before_options ->

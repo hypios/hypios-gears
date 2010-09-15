@@ -6,7 +6,7 @@ SPHINX_LIB_STATIC = /usr/lib/libsphinxclient.a ## Qd qqun a deux minutes, builde
 INCLUDES = -I $(SPHINX_INCLUDE) -I `ocamlc -where`
 LIBS = $(SPHINX_LIB_STATIC)
 
-all: lib
+all: hygears_sphinx.cmo hygears_sphinx.cmx lib_cmo lib_cmx
 
 %.o: %.c
 	gcc $(INCLUDES) $^ -c -o $@ 
@@ -17,8 +17,11 @@ all: lib
 %.cmx: %.mlpack
 	ocamlbuild $@
 
-lib: hygears_sphinx.cmo sphinx_stubs.o
+lib_cmo: hygears_sphinx.cmo sphinx_stubs.o
 	ocamlmklib -o hygears_sphinx _build/hygears_sphinx.cmo sphinx_stubs.o -lsphinxclient
+
+lib_cmx: hygears_sphinx.cmx sphinx_stubs.o
+	ocamlmklib -o hygears_sphinx _build/hygears_sphinx.cmx sphinx_stubs.o -lsphinxclient
 
 
 

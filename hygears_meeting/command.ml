@@ -69,7 +69,9 @@ let rec list_filter cmp =
 (** Those functions lead to segfaults *)
       
 let remove_participant meeting participant = 
-  meeting.participants <- List.remove_assoc participant meeting.participants ; meeting
+  match List.remove_assoc participant meeting.participants with 
+    | [] -> meeting.participants <- []; meeting
+    | l -> meeting.participants <- l ; meeting 
 
 let accept_range meeting participant range = 
   let accepted_ranges, rejected_ranges = List.assoc participant meeting.participants in
