@@ -5,3 +5,4 @@ _build*
 *.conf
 .DS*
 *.txt
+./ocaml-orm-sqlite/*
