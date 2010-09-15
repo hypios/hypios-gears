@@ -138,5 +138,5 @@ let find_concensus meeting  =
 
   let preferences_list = RangeMap.fold (fun range weight acc -> (range, weight) :: acc) preferences_map [] in
 
-  List.sort (fun (_, w1) (_, w2) -> w1 - w2) preferences_list 
+  List.rev ( List.sort (fun (_, w1) (_, w2) -> w1 - w2) preferences_list ) 
     

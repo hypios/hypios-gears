@@ -9,3 +9,5 @@ _build*
 *.so
 *.o
 *.cm*
+=======
+ocaml-orm-sqlite*
