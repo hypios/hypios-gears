@@ -36,18 +36,12 @@ let period_to_string p =
 	
 type status = Accepted | Rejected | Unknown (* Used as support type, not core *)
 
-type participation = {
-  mutable accepted_ranges : period list ; 
-  mutable rejected_ranges : period list ; 
-} with orm 
-
-
 type meeting = {
   mutable id : meeting_id ; 
   mutable title : string ; 
   mutable description : string ;
   owner : user_id ; 
-  mutable participants : (user_id * participation) list ;
+  mutable participants : (user_id * ((period list) * (period list))) list ;
   mutable ranges : period list ;
   mutable chosen_date : period ;
   mutable is_open : bool ;

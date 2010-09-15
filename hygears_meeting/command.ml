@@ -53,35 +53,39 @@ let remove_range meeting range =
   meeting.ranges <- range :: meeting.ranges ; meeting 
 
 let add_participant meeting participant = 
-  meeting.participants <- (participant, { accepted_ranges = []; rejected_ranges = [] }) :: meeting.participants ; meeting
+  match List.exists (fun (p, _) -> p = participant) meeting.participants with 
+      false -> 
+	meeting.participants <- (participant, ([], [])) :: meeting.participants ; meeting
+    | true -> meeting
 
+
+
+let rec list_filter cmp = 
+  function 
+    | [] -> []
+    | t::q when cmp t -> list_filter cmp q 
+    | t::q -> t :: (list_filter cmp q)
+
+(** Those functions lead to segfaults *)
+      
 let remove_participant meeting participant = 
-  meeting.participants <- List.filter (fun (p,_) -> p <> participant) meeting.participants ; meeting
+  meeting.participants <- List.remove_assoc participant meeting.participants ; meeting
 
 let accept_range meeting participant range = 
-  let _, participation = List.find (fun (p,_) -> p = participant) meeting.participants in
-  participation.accepted_ranges <- range :: participation.accepted_ranges ; 
-  participation.rejected_ranges <- List.filter (fun r -> r.date <> range.date && r.moment <> range.moment) participation.rejected_ranges ; 
+  let accepted_ranges, rejected_ranges = List.assoc participant meeting.participants in
+  let n_accepted_ranges = range :: accepted_ranges in 
+  let n_rejected_ranges = List.filter (fun r -> r.date <> range.date || r.moment <> range.moment) rejected_ranges in 
+  meeting.participants <- (participant, (n_accepted_ranges, n_rejected_ranges)) :: List.remove_assoc participant meeting.participants ; 
   meeting
   
 let reject_range meeting participant range =
-  let _, participation = List.find (fun (p,_) -> p = participant) meeting.participants in
-  participation.accepted_ranges <- List.filter (fun r -> r.date <> range.date && r.moment <> range.moment) participation.accepted_ranges  ; 
-  participation.rejected_ranges <- range :: participation.accepted_ranges ;
+  let accepted_ranges, rejected_ranges = List.assoc participant meeting.participants in
+  let n_accepted_ranges = List.filter (fun r -> r.date <> range.date || r.moment <> range.moment) accepted_ranges in 
+  let n_rejected_ranges = range :: rejected_ranges in 
+  meeting.participants <- (participant, (n_accepted_ranges, n_rejected_ranges)) :: List.remove_assoc participant meeting.participants ; 
   meeting
 
-
 (* Retrieval methods *)
-
-let find_concensus meeting = 
-  List.fold_left (fun remaining (_, participation) ->
-    List.fold_left (fun remaining range -> 
-      (* <> ??? *)
-      List.filter (fun r -> r.date <> range.date && r.moment <> range.moment) remaining)
-      remaining participation.rejected_ranges
-  ) meeting.ranges meeting.participants 
-
-
 
 module Date = 
   struct 
@@ -113,18 +117,18 @@ module RangeMap = Map.Make (Range)
 
 let find_concensus meeting  = 
   
-  let preferences_map = List.fold_left (fun m (_, participation) -> 
+  let preferences_map = List.fold_left (fun m (_, (accepted_ranges, rejected_ranges)) -> 
     
     let m' = List.fold_left (fun acc range -> 
       let weight = try RangeMap.find range acc with Not_found -> 0 in
       RangeMap.add range (weight-1) acc 
-    ) m participation.rejected_ranges in 
+    ) m rejected_ranges in 
 
  
     let m'' = List.fold_left (fun acc range -> 
       let weight = try RangeMap.find range acc with Not_found -> 0 in
       RangeMap.add range (weight+1) acc 
-    ) m' participation.accepted_ranges in 
+    ) m' accepted_ranges in 
     
     m''
 
