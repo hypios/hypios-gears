@@ -37,4 +37,7 @@ module type T =
     val update : key -> diff -> value Lwt.t
 
     val clear : unit -> unit
+      
+
+    val remove : key -> unit 
   end
