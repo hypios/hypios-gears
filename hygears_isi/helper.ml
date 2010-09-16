@@ -25,4 +25,4 @@ let append key value map =
   Printf.printf "Inserting %s -> %s\n" key value; 
   let current = try AttributesMap.find key map with _ -> [] in
   AttributesMap.add key (value :: current) map 
-    `
+

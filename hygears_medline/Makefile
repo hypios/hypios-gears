@@ -1,5 +1,6 @@
 all: 
 	ocamlbuild hygears_medline.cmo
+	ocamlbuild hygears_medline.cmx -cflags -for-pack,Hygears_medline
 
 byte:
 	ocamlbuild main.byte

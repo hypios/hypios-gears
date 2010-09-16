@@ -24,10 +24,11 @@ default: all
 DISPLAYFLAG := -classic-display
 
 OCAMLBUILD := ocamlbuild
-OCAMLFIND := ocamlfind 
+OCAMLFIND := ocamlducefind
 
 all: 
 	$(OCAMLBUILD) hygears_wikicreole.cma
+	$(OCAMLBUILD) hygears_wikicreole.cmxa -cflags -for-pack,Hygears_wikicreole
 
 test: 
 	$(OCAMLBUILD) test.byte 

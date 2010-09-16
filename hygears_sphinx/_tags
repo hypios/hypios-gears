@@ -1,0 +1,3 @@
+<types.cmx> : for-pack(Hygears_sphinx)
+<connection.cmx> : for-pack(Hygears_sphinx)
+<command.cmx> : for-pack(Hygears_sphinx)

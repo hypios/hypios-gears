@@ -5,50 +5,54 @@
  *
  *)
 
+(* Types are extremely basic here, to cope with orm restrictions. For more advanced types, revert to commits < 9/11 2010 *)
+
 open Lwt 
 open Misc
 
-module Period = 
-  struct 
-    type t =  
-	{  
-	  date : CalendarLib.Printer.Date.t ;
-	  moment : string ; 
-	}
+type user_id = int with orm
+type meeting_id = int64 with orm 
 
-    let compare p1 p2 =
-      match CalendarLib.Date.compare p1.date p2.date with 
-	| 0 -> String.compare p1.moment p2.moment
-	| c -> c
+type date = { year: int ; month: int; day: int } with orm
 
-    let to_string p = 
-      (CalendarLib.Printer.Date.sprint "%A, %B %d, %Y " p.date) ^ p.moment
+type period =  
+    {  
+      date : date ;
+      moment : string ; 
+    } with orm 
+
+let d2date d = 
+  CalendarLib.Date.make d.year d.month d.day 
+
+let date2d date = 
+ {
+   year = CalendarLib.Date.year date ; 
+   month = CalendarLib.Date.month date >>> CalendarLib.Date.int_of_month ; 
+   day = CalendarLib.Date.day_of_month date ; 
+ }
+  
+let period_to_string p = 
+  (CalendarLib.Printer.Date.sprint "%A, %B %d, %Y " (d2date p.date)) ^ p.moment
 	
-  end
-
-module PeriodSet = Set.Make (Period)
-
-module UserId = 
-  struct 
-    type t = int 
-    let compare = Pervasives.compare 
-  end
-
-module ParticipantMap = Map.Make (UserId)
-
 type status = Accepted | Rejected | Unknown (* Used as support type, not core *)
 
-type participation = {
-  accepted_ranges : PeriodSet.t ;
-  rejected_ranges : PeriodSet.t ;
-}
-
 type meeting = {
-  title : string ; 
-  description : string ;
-  owner : UserId.t ; 
-  participants : participation ParticipantMap.t ;
-  ranges : PeriodSet.t ;
-}
+  mutable id : meeting_id ; 
+  mutable title : string ; 
+  mutable description : string ;
+  owner : user_id ; 
+  mutable participants : (user_id * ((period list) * (period list))) list ;
+  mutable ranges : period list ;
+  mutable chosen_date : period ;
+  mutable is_open : bool ;
+} with orm  
+
+
+let range_equal r1 r2 = 
+  r1.moment = r2.moment 
+  && r1.date.year = r2.date.year 
+    && r1.date.month = r2.date.month
+      && r1.date.day = r2.date.day
+
     
 

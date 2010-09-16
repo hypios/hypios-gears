@@ -5,6 +5,8 @@ _build*
 *.conf
 .DS*
 *.txt
-*.so
 *.a
+*.so
 *.o
+*.cm*
+ocaml-orm-sqlite*
