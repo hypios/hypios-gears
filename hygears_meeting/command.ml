@@ -67,11 +67,10 @@ let rec list_filter cmp =
     | t::q -> t :: (list_filter cmp q)
 
 (** Those functions lead to segfaults *)
-      
+     
 let remove_participant meeting participant = 
-  match List.remove_assoc participant meeting.participants with 
-    | [] -> meeting.participants <- []; meeting
-    | l -> meeting.participants <- l ; meeting 
+   meeting.participants <- List.remove_assoc participant meeting.participants ; meeting 
+
 
 let accept_range meeting participant range = 
   let accepted_ranges, rejected_ranges = List.assoc participant meeting.participants in

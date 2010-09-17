@@ -10,7 +10,7 @@
 open Lwt 
 open Misc
 
-type user_id = int with orm
+
 type meeting_id = int64 with orm 
 
 type date = { year: int ; month: int; day: int } with orm
@@ -36,12 +36,13 @@ let period_to_string p =
 	
 type status = Accepted | Rejected | Unknown (* Used as support type, not core *)
 
+(* There is still a segfault here .. *)
 type meeting = {
   mutable id : meeting_id ; 
   mutable title : string ; 
   mutable description : string ;
-  owner : user_id ; 
-  mutable participants : (user_id * ((period list) * (period list))) list ;
+  owner : int64 ; 
+  mutable participants : (int64 * ((period list) * (period list))) list ; 
   mutable ranges : period list ;
   mutable chosen_date : period ;
   mutable is_open : bool ;

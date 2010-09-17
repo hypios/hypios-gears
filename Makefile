@@ -9,7 +9,7 @@ all: $(HYGEARS)
 
 
 install: $(HYGEARS)
-	for i in $(HYGEARS); do make -C $$i install; done
+	for i in $(HYGEARS); do make -C $$i remove install; done
 
 clean: $(HYGEARS)
 	for i in $(HYGEARS); do make -C $$i clean; done
