@@ -27,7 +27,7 @@ type attributes =
 
 type occurence = 
     {
-      doc_id : int ; 
+      doc_id : int64 ; 
       weight : int ;
       attributes : attributes array ;
     }
