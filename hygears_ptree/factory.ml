@@ -37,8 +37,8 @@ module Make = functor (Data: Signatures.V) ->
                     Node (elements, CharMap.add switch new_child children)
                 with Not_found ->  Node (elements, CharMap.add switch (create_derivation elem suffix) children)
         in
-      let path = Data.to_string elem in
-      insert_internal path tree
+      let paths = Data.to_strings elem in
+      List.fold_left (fun acc path -> insert_internal path acc) tree paths
 
     let insert_list elem_list tree =
       List.fold_left (fun tree elem -> insert elem tree) tree elem_list
@@ -69,7 +69,10 @@ module Make = functor (Data: Signatures.V) ->
                                   )
                                   
               in 
-        match remove_internal (Data.to_string elem) tree with 
+       match List.fold_left (fun acc path -> 
+	 match acc with 
+	     Some t -> remove_internal path t
+	   | None -> None ) (Some tree) (Data.to_strings elem) with 
             Some t -> t
           | None -> empty
 

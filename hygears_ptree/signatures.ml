@@ -2,7 +2,7 @@ module type V =
   sig
     type t
 
-    val to_string : t -> string
+    val to_strings : t -> string list
   end
 
 module type T =
