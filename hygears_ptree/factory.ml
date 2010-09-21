@@ -14,7 +14,7 @@ module Make = functor (Data: Signatures.V) ->
 
     let empty = Node ( [],  CharMap.empty )
 
-    let insert elem tree =
+    let insert ?(replace=true) elem tree =
       let rec create_derivation elem path =
         if String.length path = 0 then
          Node ([elem], CharMap.empty)
@@ -29,7 +29,7 @@ module Make = functor (Data: Signatures.V) ->
       let rec insert_internal path tree =
         match tree with Node (elements, children) ->
         match String.length path with
-          0 ->  Node (elem :: elements, children)
+          0 ->  Node ((match replace with true -> [ elem ] | false -> elem :: elements), children)
         | l ->  let switch = path.[0] in
                 let suffix = String.sub path 1 (l - 1) in
                 try 
