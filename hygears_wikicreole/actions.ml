@@ -37,8 +37,14 @@ let parse_common_attribs attribs =
       let c = Ocamlduce.Utf8.make (List.assoc  "id" attribs) in
       {{ {id=c} }}
     with Not_found -> {{ {} }}
+  and at3 =
+    try
+      let c = Ocamlduce.Utf8.make (List.assoc  "style" attribs) in
+      {{ {style=c} }}
+    with Not_found -> {{ {} }}
+    
   in
-  ({{ at1++at2 }} : Xhtmltypes_duce.coreattrs)
+  ({{ at1++at2++at3 }} : Xhtmltypes_duce.coreattrs)
 
 let parse_table_attribs attribs =
   let atts = parse_common_attribs attribs

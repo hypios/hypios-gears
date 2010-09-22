@@ -11,7 +11,7 @@ module type T =
     type e
 
     val empty : t
-    val insert : e -> t -> t
+    val insert : ?replace:bool -> e -> t -> t
     val insert_list : e list -> t -> t
     val remove : e -> t -> t
     val search : string -> t -> t
