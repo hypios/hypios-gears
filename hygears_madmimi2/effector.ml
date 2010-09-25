@@ -37,3 +37,8 @@ let post_urlencoded ?https ?port ?headers ~host ~uri ~content () =
 
 let send connection uri content = 
   post_urlencoded ~host:connection.endpoint ~uri:uri ~content:content ()
+    >>= fun frame -> 
+           match frame.Ocsigen_http_frame.frame_content with
+	       None -> failwith "Server down"
+	     | Some data -> Ocsigen_stream.string_of_stream (Ocsigen_stream.get data)
+
