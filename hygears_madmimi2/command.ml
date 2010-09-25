@@ -45,7 +45,7 @@ module ListManagement =
       Effector.send connection (sprintf "/audience_lists/%s/add" name) request
 	>>= fun _ -> return () 
 
-  let remove_audience connection name email = 
+    let remove_audience connection name email = 
       let request = 
 	[
 	  "email", email ; 
@@ -55,4 +55,28 @@ module ListManagement =
       Effector.send connection (sprintf "/audience_lists/%s/remove" name) request
 	>>= fun _ -> return () 
       
+    (* MEEEEERDE ils n'ont pas de méthodes pour retrouver les membres d'une liste?? *)
+    
+      
+  end
+
+
+module Mailer =
+  struct 
+    (* From is either the raw email or at the Display Name <email@domain.com> *)
+    (* Because you are sending to a list you will need to include the [[unsubscribe]] (or [[opt_out]] alias) macro with raw_html and raw_plain_text. If you are using raw_html you will also need to include the [[tracking_beacon]] (or [[peek_image]] alias) macro. *)
+
+    let send_to_list connection list from subject content = 
+      let request = 
+	[
+	  "from", from ;
+	  "promotion_name", "raw_plain_text" ;
+	  "subject", subject ; 
+	  "raw_html", content ; 
+	  "list_name", list ; 
+	  "username", connection.username ;
+	  "api_key", connection.key ;
+	] in
+      Effector.send connection "/mailer/to_list" request
+
   end
