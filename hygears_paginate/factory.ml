@@ -54,5 +54,8 @@ module Make =
 	   
 	 let get_page key page_id = 
 	   Cache.get key >>= fun array -> return (array.(page_id))
+
+	 let clean key = 
+	   Cache.remove key 
 	   
        end
