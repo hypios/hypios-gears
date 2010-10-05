@@ -1,0 +1,7 @@
+name="hygears_paginate"
+version="0.0.1"
+description="Hypios gears - paginate"
+requires="ocsigen hygears_cache"
+archive(byte) = "hygears_paginate.cmo"
+archive(native) = "hygears_paginate.cmx"
+
