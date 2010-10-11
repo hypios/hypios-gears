@@ -29,7 +29,7 @@ module Make =
 	 module Cache = Hygears_cache.Factory.Make (
 	   struct 
 	     type key = Data.key
-	     type value = Data.t list array 
+	     type value = int * Data.t list array 
 	     type diff = unit 
 
 	     let max_size = Params.cache_size
@@ -43,7 +43,7 @@ module Make =
 		   | (0, l) -> dispatch (acc :: pages) [] (Params.page_size, l)
 		   | (n, h::t) -> dispatch pages (h::acc) (n-1, t) in 
 	       let pages = dispatch [] [] (0, elts) in 
-	       return (Array.of_list pages)
+	       return (List.length elts, Array.of_list pages)
 	       
 	       
 	     let insert _ _ = assert false 
@@ -53,7 +53,7 @@ module Make =
 
 	   
 	 let get_page key page_id = 
-	   Cache.get key >>= fun array -> return (array.(page_id))
+	   Cache.get key >>= fun (size, array) -> return (size, array.(page_id))
 
 	 let clean key = 
 	   Cache.remove key 
