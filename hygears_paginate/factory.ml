@@ -57,5 +57,8 @@ module Make =
 
 	 let clean key = 
 	   Cache.remove key 
-	   
+
+	 let clear () =
+	   Cache.clear ()
+
        end
