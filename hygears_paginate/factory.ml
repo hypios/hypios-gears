@@ -42,8 +42,8 @@ module Make =
 		   | (_, []) -> acc :: pages 
 		   | (0, l) -> dispatch (acc :: pages) [] (Params.page_size, l)
 		   | (n, h::t) -> dispatch pages (h::acc) (n-1, t) in 
-	       let pages = dispatch [] [] (0, elts) in 
-	       return (List.length elts, Array.of_list pages)
+	       let pages = dispatch [] [] (0, (List.rev elts)) in 
+	       return (List.length elts, Array.of_list (List.rev pages))
 	       
 	       
 	     let insert _ _ = assert false 
