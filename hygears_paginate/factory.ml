@@ -39,10 +39,12 @@ module Make =
 	       >>= fun elts -> 
 	       let rec dispatch pages acc = 
 		 function 
-		   | (_, []) -> acc :: pages 
-		   | (0, l) -> dispatch (acc :: pages) [] (Params.page_size, l)
+		   | (_, []) -> (match acc with [] -> pages | _ -> (List.rev acc) :: pages)
+		   | (0, l) -> dispatch ((List.rev acc) :: pages) [] (Params.page_size, l)
 		   | (n, h::t) -> dispatch pages (h::acc) (n-1, t) in 
 	       let pages = dispatch [] [] (0, (List.rev elts)) in 
+
+	       List.iter (fun p -> Printf.printf ">> Size of page : %d\n" (List.length p)) pages ;
 	       return (List.length elts, Array.of_list (List.rev pages))
 	       
 	       
@@ -51,9 +53,10 @@ module Make =
 	   end
 	 ) 
 
-	   
+
+	  (* No page = empty page, to catch the dirty index_out_of_bounds exception *)
 	 let get_page key page_id = 
-	   Cache.get key >>= fun (size, array) -> return (size, array.(page_id))
+	   Cache.get key >>= fun (size, array) -> let page = try array.(page_id) with _ -> [] in return (size, page)
 
 	 let clean key = 
 	   Cache.remove key 
