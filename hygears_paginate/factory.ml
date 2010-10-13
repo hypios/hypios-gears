@@ -42,7 +42,7 @@ module Make =
 		   | (_, []) -> (match acc with [] -> pages | _ -> (List.rev acc) :: pages)
 		   | (0, l) -> dispatch ((List.rev acc) :: pages) [] (Params.page_size, l)
 		   | (n, h::t) -> dispatch pages (h::acc) (n-1, t) in 
-	       let pages = dispatch [] [] (Params.page_size, (List.rev elts)) in 
+	       let pages = dispatch [] [] (Params.page_size, elts) in 
 
 	       List.iter (fun p -> Printf.printf ">> Size of page : %d\n" (List.length p)) pages ;
 	       return (List.length elts, Array.of_list (List.rev pages))
