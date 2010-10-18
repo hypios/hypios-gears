@@ -1,0 +1,6 @@
+name="hygears_mapping"
+version="0.0.1"
+description="Hypios gears - mapping"
+requires="ocsigen"
+archive(byte) = "hygears_mapping.cmo"
+archive(native) = "hygears_mapping.cmx"
