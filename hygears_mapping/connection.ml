@@ -9,9 +9,9 @@ type t =
     }
     
 let create_key username password = {
-        host = "88.190.12.149" ;
+        host = "sd-19613.dedibox.fr" ;
         username = username ;
         password = password ;
-        auth= (Netencoding.Base64.encode username) ^ ":" ^ (Netencoding.Base64.encode password) ;
+        auth= "Basic " ^ "(" ^ (Netencoding.Base64.encode username) ^ ":" ^ (Netencoding.Base64.encode password) ^ ")" ;
 }
 
