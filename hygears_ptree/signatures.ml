@@ -1,7 +1,6 @@
 module type V =
   sig
     type t
-
     val to_strings : t -> string list
   end
 

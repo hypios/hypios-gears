@@ -4,7 +4,7 @@ module InversedChar =
     let compare a b = Char.compare b a
 end
 
-module CharMap = Map.Make (InversedChar)
+module CharMap = Map.Make (Char)
 
 
 module Make = functor (Data: Signatures.V) ->
