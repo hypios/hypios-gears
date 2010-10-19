@@ -6,11 +6,14 @@ open Connection
   GET /json/_db__/__graph_kind__/__graph_subkind__/__actor_id_
   *)
   
-let get_json connection db graph_kind graph_subkind actor_id = 
-  let db = match db with
-    | `Publications -> "publications" 
-    | `Projects -> "projects" in
+let db_to_string = function 
+  | `Publications -> "publications" 
+  | `Projects -> "projects" 
 
+let get_json connection db graph_kind graph_subkind actor_id = 
+  
+  let db = db_to_string db in
+  
   let graph_kind = match graph_kind with 
     | `AA -> "AA" in
 
@@ -23,3 +26,38 @@ let get_json connection db graph_kind graph_subkind actor_id =
 
   Effector.get connection (sprintf "/json/%s/%s/%s/?a=%%20Pierga%%20%%20J-Y%%20%%20JY" db graph_kind graph_subkind)
 
+open Json_type
+
+module Instance = 
+  struct 
+    
+    let create connection db body = 
+      let db = db_to_string db in
+      Effector.post connection (sprintf "/rest/%s/instance/" db) body 
+
+    let update connection db instance_id body = 
+      let db = db_to_string db in
+      Effector.put connection (sprintf "/rest/%s/instance/%Ld/" db instance_id) body 
+	
+  end
+
+
+module Actor = 
+  struct 
+    
+    let create connection db body = 
+      let db = db_to_string db in
+      Effector.post connection (sprintf "/rest/%s/actor/" db) body 
+
+    let update connection db actor_id body = 
+      let db = db_to_string db in
+      Effector.put connection (sprintf "/rest/%s/actor/%Ld/" db actor_id) body 
+	
+  end
+
+
+module InstanceActor = 
+  struct 
+    
+    
+  end

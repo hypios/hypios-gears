@@ -12,6 +12,6 @@ let create username password = {
         host = "sd-19613.dedibox.fr" ;
         username = username ;
         password = password ;
-        auth= "Basic " ^ "(" ^ (Netencoding.Base64.encode username) ^ ":" ^ (Netencoding.Base64.encode password) ^ ")" ;
+        auth = Netencoding.Base64.encode (Printf.sprintf "%s:%s" username password) ;
 }
 
