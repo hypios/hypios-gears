@@ -8,7 +8,7 @@ type t =
       auth : string ; 
     }
     
-let create_key username password = {
+let create username password = {
         host = "sd-19613.dedibox.fr" ;
         username = username ;
         password = password ;

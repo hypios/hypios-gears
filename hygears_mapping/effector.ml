@@ -20,7 +20,7 @@ open Connection
     () *)
 
 let get connection uri =
-        Printf.printf "%s\n" uri;
+        Printf.printf "URI:%s\n" uri;
         Ocsigen_http_client.get ~host:connection.host ~uri () 
         >>= fun frame -> 
           match frame.Ocsigen_http_frame.frame_content with
