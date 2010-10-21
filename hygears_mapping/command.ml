@@ -39,6 +39,10 @@ module Instance =
       let db = db_to_string db in
       Effector.put connection (sprintf "/rest/%s/instance/%Ld/" db instance_id) body 
 	
+    let delete connection db instance_id body =
+          let db = db_to_string db in
+          Effector.delete connection (sprintf "/rest/%s/instance/%Ld/" db instance_id) body
+ 
   end
 
 
@@ -53,11 +57,56 @@ module Actor =
       let db = db_to_string db in
       Effector.put connection (sprintf "/rest/%s/actor/%Ld/" db actor_id) body 
 	
+    let delete connection db actor_id body = 
+      let db = db_to_string db in
+      Effector.delete connection (sprintf "/rest/%s/actor/%Ld/" db actor_id) body 
+    
   end
 
 
 module InstanceActor = 
   struct 
     
+    let create connection db instance_id actor_id body =
+            let db = db_to_string db in
+            Effector.post connection (sprintf "/rest/%s/instance/%Ld/actor/%Ld" db instance_id actor_id) body
+   
+   
+   let update connection db instance_id actor_id body =
+           let db = db_to_string db in
+           Effector.put connection (sprintf "/rest/%s/instance/%Ld/actor/%Ld" db instance_id actor_id) body          
     
   end
+
+
+module Concept =
+  struct
+  
+     let create connection db body =
+             let db = db_to_string db in
+             Effector.post connection (sprintf "/rest/%s/concept/" db ) body
+             
+     let update connection db md_id body =
+             let db = db_to_string db in
+             Effector.put connection (sprintf "/rest/%s/concept/%Ld" db md_id) body
+  
+     let delete connection db actor_id body = 
+             let db = db_to_string db in
+             Effector.delete connection (sprintf "/rest/%s/actor/%Ld/" db actor_id) body 
+     
+  end
+
+module InstanceConcept =
+  struct
+  
+     let create connection db instance_id md_id body =
+             let db = db_to_string db in
+             Effector.put connection (sprintf "/rest/%s/instance/%Ld/concept/%Ld" db instance_id md_id) body
+             
+     
+     let update connection db instance_id md_id body =
+             let db = db_to_string db in
+             Effector.put connection (sprintf "/rest/%s/instance/%Ld/concept/%Ld" db instance_id md_id) body
+
+  end
+  
