@@ -4,7 +4,17 @@ open Connection
 
 let get connection uri =
         Printf.printf "URI:%s\n" uri;
-        Ocsigen_http_client.get ~host:connection.host ~uri () 
+        Ocsigen_lib.get_inet_addr connection.host >>= fun inet_addr ->
+
+        Ocsigen_http_client.raw_request
+          ~http_method:Ocsigen_http_frame.Http_header.GET
+          ~headers:(Http_headers.add (Http_headers.name "Authorization") (Printf.sprintf "Basic %s" connection.auth) Http_headers.empty) 
+          ~host:connection.host
+          ~inet_addr
+          ~uri
+          ~content:None
+          ()
+          () 
         >>= fun frame -> 
           match frame.Ocsigen_http_frame.frame_content with
               None -> failwith "Server down"
@@ -117,6 +127,10 @@ let delete connection uri content =
     ~host:connection.host 
     ~uri 
     ~content ()
+    >>= fun frame -> 
+              match frame.Ocsigen_http_frame.frame_content with
+                  None -> Printf.printf "@@@ PANIC!\n"; failwith "Empty body"
+                | Some data ->  Printf.printf "@@@ OK man\n"; Ocsigen_stream.string_of_stream (Ocsigen_stream.get data)
 (*
 let post connection uri body = 
   Printf.printf "URI (post): %s\n" uri ; 
