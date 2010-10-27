@@ -43,15 +43,11 @@ module Make =
 		   | (0, l) -> dispatch ((List.rev acc) :: pages) [] (Params.page_size, l)
 		   | (n, h::t) -> dispatch pages (h::acc) (n-1, t) in 
 	       let pages = dispatch [] [] (Params.page_size, elts) in 
-
-	       List.iter (fun p -> Printf.printf ">> Size of page : %d\n" (List.length p)) pages ;
 	       return (List.length elts, Array.of_list (List.rev pages))
-	       
-	       
+	       	       
 	     let insert _ _ = assert false 
 	     let update _ _ = assert false 
-	   end
-	 ) 
+	   end ) 
 
 
 	  (* No page = empty page, to catch the dirty index_out_of_bounds exception *)
