@@ -5,10 +5,16 @@ open Connection
 (*
   GET /json/_db__/__graph_kind__/__graph_subkind__/__actor_id_
   *)
+  (* /rest/<db>/instance/{publication_id}/ to get a publication (or project)
   
+  
+    /rest/<db>/actor/{author_id}/  to get an author *)
+    
+    (*88.190.12.149/rest/projects/actor/2 *)
 let db_to_string = function 
   | `Publications -> "publications" 
   | `Projects -> "projects" 
+  | `Actor -> "actor"
 
 let get_json connection db graph_kind graph_subkind actor_id = 
   
@@ -24,7 +30,7 @@ let get_json connection db graph_kind graph_subkind actor_id =
     | `s -> "s" 
     | `a -> "a" in
 
-  Effector.get connection (sprintf "/json/%s/%s/%s/?a=%%20Pierga%%20%%20J-Y%%20%%20JY" db graph_kind graph_subkind)
+  Effector.get connection (sprintf "/rest/%s/%s/%s/actor/%Ld/" db graph_kind graph_subkind actor_id)
 
 open Json_type
 
