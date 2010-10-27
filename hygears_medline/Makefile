@@ -9,7 +9,7 @@ native:
 	ocamlbuild main.native
 
 install: 
-	ocamlfind install hygears_medline META _build/hygears_medline.cm*
+	ocamlfind install hygears_medline META _build/hygears_medline.cm* _build/hygears_medline.o
 
 remove: 
 	ocamlfind remove hygears_medline

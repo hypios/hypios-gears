@@ -3,7 +3,7 @@ all:
 	ocamlbuild hygears_paginate.cmx -cflags -for-pack,Hygears_paginate
 
 install: 
-	ocamlfind install hygears_paginate META _build/hygears_paginate.cm*
+	ocamlfind install hygears_paginate META _build/hygears_paginate.cm* _build/hygears_paginate.o
 
 remove: 
 	ocamlfind remove hygears_paginate
