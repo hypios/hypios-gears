@@ -1,7 +1,7 @@
 name="hygears"
 version="0.0.1"
 description="Hypios gears - the full edition"
-requires="ocsigen hygears_cache"
+requires="ocsigen"
 archive(byte) = "hygears.cmo"
 archive(native) = "hygears.cmx"
 
