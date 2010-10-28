@@ -20,3 +20,6 @@ clean: $(HYGEARS)
 
 remove: $(HYGEARS)
 	for i in $(HYGEARS); do make -C $$i remove; done
+
+install_native: 
+	ocamlfind install hygears META hygears.cmxs 
