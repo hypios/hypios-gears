@@ -34,7 +34,7 @@ test:
 	$(OCAMLBUILD) test.byte 
 
 install:
-	$(OCAMLFIND) install hygears_wikicreole META _build/hygears_wikicreole.cm*
+	$(OCAMLFIND) install hygears_wikicreole META _build/hygears_wikicreole.cm* _build/hygears_wikicreole.o _build/hygears_wikicreole.a
 
 remove: 
 	$(OCAMLFIND) remove hygears_wikicreole

@@ -3,7 +3,7 @@ all:
 	ocamlbuild hygears_client.cmx -cflags -for-pack,Hygears_client
 
 install: 
-	ocamlfind install hygears_client META _build/hygears_client.cm*
+	ocamlfind install hygears_client META _build/hygears_client.cm* _build/hygears_client.o
 
 remove: 
 	ocamlfind remove hygears_client

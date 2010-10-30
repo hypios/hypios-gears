@@ -3,7 +3,7 @@ all:
 	ocamlbuild hygears_mapping.cmx -cflags -for-pack,Hygears_mapping
 
 install: 
-	ocamlfind install hygears_mapping META _build/hygears_mapping.cm*
+	ocamlfind install hygears_mapping META _build/hygears_mapping.cm* _build/hygears_mapping.o
 
 remove: 
 	ocamlfind remove hygears_mapping
