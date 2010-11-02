@@ -9,7 +9,7 @@ let (>>>) f g = g f
 
 
 (** OCaml strings are already in Latin1 ? *)
-let make_string (s:string) = Lwt.return {{ {: s :} }}
+let make_string (s:string) = Lwt.return {{ {: Ocamlduce.Utf8.make s :} }}
 
 let element (c : Xhtmltypes_duce.inlines Lwt.t list) = 
   Lwt_util.map_serial (fun x -> x) c >>= fun c ->
