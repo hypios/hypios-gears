@@ -10,6 +10,7 @@ let get connection uri =
           ~http_method:Ocsigen_http_frame.Http_header.GET
           ~headers:(Http_headers.add (Http_headers.name "Authorization") (Printf.sprintf "Basic %s" connection.auth) Http_headers.empty) 
           ~host:connection.host
+	  ~port:connection.port
           ~inet_addr
           ~uri
           ~content:None
@@ -21,7 +22,7 @@ let get connection uri =
             | Some data ->  Ocsigen_stream.string_of_stream (Ocsigen_stream.get data) 
           
 let post_string ?https ?port ?(headers = Http_headers.empty) ~host ~uri ~content ~content_type () =
- 
+  Printf.printf "@@@ POST uri: %s\n" uri ; flush stdout ;
   Ocsigen_lib.get_inet_addr host >>= fun inet_addr ->
 
   let content_type = String.concat "/" [fst content_type; snd content_type] in
@@ -49,6 +50,7 @@ let post connection uri content =
   post_urlencoded 
     ~headers:(Http_headers.add (Http_headers.name "Authorization") (Printf.sprintf "Basic %s" connection.auth) Http_headers.empty)
     ~host:connection.host 
+    ~port:connection.port
     ~uri 
     ~content ()
  >>= fun frame -> 
@@ -85,7 +87,8 @@ let put_urlencoded ?https ?port ?headers ~host ~uri ~content () =
 let put connection uri content = 
   put_urlencoded 
     ~headers:(Http_headers.add (Http_headers.name "Authorization") (Printf.sprintf "Basic %s" connection.auth) Http_headers.empty)
-    ~host:connection.host 
+    ~host:connection.host
+    ~port:connection.port
     ~uri 
     ~content ()
  >>= fun frame -> 
@@ -124,21 +127,21 @@ let delete_urlencoded ?https ?port ?headers ~host ~uri ~content () =
 let delete connection uri content = 
   delete_urlencoded 
     ~headers:(Http_headers.add (Http_headers.name "Authorization") (Printf.sprintf "Basic %s" connection.auth) Http_headers.empty)
-    ~host:connection.host 
+    ~host:connection.host
+    ~port:connection.port
     ~uri 
     ~content ()
     >>= fun frame -> 
               match frame.Ocsigen_http_frame.frame_content with
                   None -> Printf.printf "@@@ PANIC!\n"; failwith "Empty body"
                 | Some data ->  Printf.printf "@@@ OK man\n"; Ocsigen_stream.string_of_stream (Ocsigen_stream.get data)
+
 (*
-let post connection uri body = 
+  let post connection uri body = 
   Printf.printf "URI (post): %s\n" uri ; 
   
   let headers = Http_headers.add (Http_headers.name "Authorization") (Printf.sprintf "Basic %s" connection.auth) Http_headers.empty in
- 
-  
-  
+
   Ocsigen_lib.get_inet_addr connection.host >>= fun inet_addr ->
   let content_type = "" in
   let content =  (Json_io.string_of_json body) in
@@ -153,9 +156,10 @@ let post connection uri body =
     ~inet_addr
     ~uri
     ()
-    () >>= fun frame -> 
-          match frame.Ocsigen_http_frame.frame_content with
-              None -> Printf.printf "@@@ PANIC!\n"; failwith "Empty body"
-            | Some data ->  Printf.printf "@@@ OK man\n"; Ocsigen_stream.string_of_stream (Ocsigen_stream.get data) 
+  () >>= fun frame -> 
+  match frame.Ocsigen_http_frame.frame_content with
+  None -> Printf.printf "@@@ PANIC!\n"; failwith "Empty body"
+  | Some data ->  Printf.printf "@@@ OK man\n"; Ocsigen_stream.string_of_stream (Ocsigen_stream.get data) 
   
-	      *)
+*)
+		  

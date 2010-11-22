@@ -3,13 +3,15 @@
 type t = 
     {
       host: string ;
+      port : int ; 
       username : string ;
       password : string ; 
       auth : string ; 
     }
     
-let create username password = {
-        host = "sd-19613.dedibox.fr" ;
+let create host port username password = {
+  host = host ;
+  port = port ;
         username = username ;
         password = password ;
         auth = Netencoding.Base64.encode (Printf.sprintf "%s:%s" username password) ;
