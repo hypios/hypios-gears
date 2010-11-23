@@ -28,13 +28,13 @@ OCAMLFIND := ocamlducefind
 
 all: 
 	$(OCAMLBUILD) hygears_wikicreole.cma
-	$(OCAMLBUILD) hygears_wikicreole.cmxa -cflags -for-pack,Hygears_wikicreole
+	$(OCAMLBUILD) hygears_wikicreole.cmx -cflags -for-pack,Hygears_wikicreole
 
 test: 
 	$(OCAMLBUILD) test.byte 
 
 install:
-	$(OCAMLFIND) install hygears_wikicreole META _build/hygears_wikicreole.cm* _build/hygears_wikicreole.o _build/hygears_wikicreole.a
+	$(OCAMLFIND) install hygears_wikicreole META _build/hygears_wikicreole.cm* _build/hygears_wikicreole.o
 
 remove: 
 	$(OCAMLFIND) remove hygears_wikicreole
