@@ -75,16 +75,16 @@ module InstanceActor =
     
     let create connection db instance_id actor_id body =
             let db = db_to_string db in
-            Effector.post connection (sprintf "/rest/%s/instance/%Ld/actor/%Ld" db instance_id actor_id) body
+            Effector.post connection (sprintf "/rest/%s/instance/%Ld/actor/%Ld/" db instance_id actor_id) body
    
    
    let update connection db instance_id actor_id body =
            let db = db_to_string db in
-           Effector.put connection (sprintf "/rest/%s/instance/%Ld/actor/%Ld" db instance_id actor_id) body        
+           Effector.put connection (sprintf "/rest/%s/instance/%Ld/actor/%Ld/" db instance_id actor_id) body        
            
    let delete connection db instance_id actor_id body =
            let db = db_to_string db in
-           Effector.delete connection (sprintf "/rest/%s/instance/%Ld/actor/%Ld" db instance_id actor_id) body   
+           Effector.delete connection (sprintf "/rest/%s/instance/%Ld/actor/%Ld/" db instance_id actor_id) body   
     
   end
 
@@ -98,7 +98,7 @@ module Concept =
              
      let update connection db md_id body =
              let db = db_to_string db in
-             Effector.put connection (sprintf "/rest/%s/concept/%Ld" db md_id) body
+             Effector.put connection (sprintf "/rest/%s/concept/%Ld/" db md_id) body
   
      let delete connection db actor_id body = 
              let db = db_to_string db in
@@ -111,15 +111,15 @@ module InstanceConcept =
   
      let create connection db instance_id md_id body =
              let db = db_to_string db in
-             Effector.put connection (sprintf "/rest/%s/instance/%Ld/concept/%Ld" db instance_id md_id) body
+             Effector.put connection (sprintf "/rest/%s/instance/%Ld/concept/%Ld/" db instance_id md_id) body
              
      
      let update connection db instance_id md_id body =
              let db = db_to_string db in
-             Effector.put connection (sprintf "/rest/%s/instance/%Ld/concept/%Ld" db instance_id md_id) body
+             Effector.put connection (sprintf "/rest/%s/instance/%Ld/concept/%Ld/" db instance_id md_id) body
 
     let delete connection db instance_id md_id body =
             let db = db_to_string db in
-            Effector.delete connection (sprintf "/rest/%s/instance/%Ld/concept/%Ld" db instance_id md_id) body
+            Effector.delete connection (sprintf "/rest/%s/instance/%Ld/concept/%Ld/" db instance_id md_id) body
   end
   
