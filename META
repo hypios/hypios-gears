@@ -3,5 +3,4 @@ version="0.0.1"
 description="Hypios gears - the full edition"
 requires="ocsigen"
 archive(byte) = "hygears.cmo"
-archive(native) = "hygears.cmx"
-
+archive(native) = "hygears_misc.cmx hygears_cache.cmx hygears_client.cmx hygears_medline.cmx hygears_ptree.cmx hygears_wikicreole.cmx hygears_paginate.cmx hygears_zemanta.cmx hygears_mapping.cmx hygears_madmimi.cmx"
