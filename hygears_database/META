@@ -1,6 +1,0 @@
-name="hygears_database"
-version="0.0.1"
-description="Hypios gears - database"
-requires="ocsigen,curl"
-archive(byte) = "hygears_database.cmo"
-archive(native) = "hygears_database.cmx"

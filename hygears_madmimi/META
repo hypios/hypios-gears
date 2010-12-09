@@ -1,7 +1,0 @@
-name="hygears_madmimi"
-version="0.0.1"
-description="Hypios gears - madmimi"
-requires="ocsigen"
-archive(byte) = "hygears_madmimi.cmo"
-archive(native) = "hygears_madmimi.cmx"
-
