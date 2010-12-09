@@ -1,6 +1,6 @@
 ## Let's build them all
 
-GEARS = misc cache client medline meeting ptree zemanta madmimi2 paginate pubmed wikicreole mapping
+GEARS = misc cache client medline meeting ptree zemanta madmimi2 paginate wikicreole mapping
 GEARS_NAME = misc cache client medline ptree wikicreole paginate wikicreole zemanta mapping madmimi
 
 HYGEARS=$(patsubst %,hygears_%, $(GEARS))
