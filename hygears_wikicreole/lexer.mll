@@ -1,4 +1,73 @@
 {
+  
+  module type INTERFACE = sig
+
+      
+type attribs = (string * string) list
+
+type ('a, 'b, 'c) ext_kind = 
+  | Block of 'a
+  | A_content of 'b
+  | Link_plugin of 'c
+
+
+(** Arguments for the extension mechanisme, after  *)
+type ('param, 'a) plugin_args = 
+    'param ->
+    attribs -> (** Xml-like attributes for the extension (eg val='foo') *)
+    string option -> (** content for the extension, after the '|' *)
+    'a
+
+type ('param, 'flow, 'a_content) plugin =
+    ('param,
+     ('flow, 'a_content, (string * attribs * 'a_content)) ext_kind
+    ) plugin_args
+
+
+type ('flow, 'inline, 'a_content, 'param) builder =
+  { chars : string -> 'a_content;
+    strong_elem : attribs -> 'inline list -> 'a_content;
+    em_elem : attribs -> 'inline list -> 'a_content;
+    br_elem : attribs -> 'a_content;
+    img_elem : attribs -> string -> string -> 'a_content;
+    tt_elem : attribs -> 'inline list -> 'a_content;
+    monospace_elem : attribs -> 'inline list -> 'a_content;
+    underlined_elem : attribs -> 'inline list -> 'a_content;
+    linethrough_elem : attribs -> 'inline list -> 'a_content;
+    subscripted_elem : attribs -> 'inline list -> 'a_content;
+    superscripted_elem : attribs -> 'inline list -> 'a_content;
+    nbsp : 'a_content;
+    endash : 'a_content;
+    emdash : 'a_content;
+    a_elem : attribs -> string -> 'a_content list -> 'inline;
+    make_href : 'param -> string -> string option -> string;
+    p_elem : attribs -> 'inline list -> 'flow;
+    pre_elem : attribs -> string list -> 'flow;
+    h1_elem : attribs -> 'inline list -> 'flow;
+    h2_elem : attribs -> 'inline list -> 'flow;
+    h3_elem : attribs -> 'inline list -> 'flow;
+    h4_elem : attribs -> 'inline list -> 'flow;
+    h5_elem : attribs -> 'inline list -> 'flow;
+    h6_elem : attribs -> 'inline list -> 'flow;
+    ul_elem : attribs -> ('inline list * 'flow option * attribs) list -> 'flow;
+    ol_elem : attribs -> ('inline list * 'flow option * attribs) list -> 'flow;
+    dl_elem : attribs -> (bool * 'inline list * attribs) list -> 'flow;
+    hr_elem : attribs -> 'flow;
+    table_elem : attribs ->
+      ((bool * attribs * 'inline list) list * attribs) list -> 'flow;
+    inline : 'a_content -> 'inline;
+    plugin : string -> bool * ('param, 'flow, 'a_content) plugin;
+    plugin_action :  string -> int -> int -> ('param, unit) plugin_args;
+    link_action : string -> string option -> attribs -> int * int -> 'param -> unit;
+    error : string -> 'a_content;
+  }
+
+val from_string : 
+    'a -> ('b, 'c, 'd, 'a) builder -> string -> 'b list Lwt.t
+  
+    end 
+    
+  module IMPLEMENTATION = struct
 (* Ocsimore
  * Copyright (C) 2008
  * Laboratoire PPS - Université Paris Diderot - CNRS
@@ -34,7 +103,7 @@ type ('a, 'b, 'c) ext_kind =
   | Link_plugin of 'c
 
 
-(** Arguments for the extension mechanisme, after '<<' *)
+(** Arguments for the extension mechanisme, after "<<" *)
 type ('param, 'a) plugin_args = 
     'param ->
     attribs -> (** Xml-like attributes for the extension (eg val='foo') *)
@@ -1007,5 +1076,9 @@ let from_lexbuf param b lexbuf =
 let from_channel param b ch = from_lexbuf param b (Lexing.from_channel ch)
 
 let from_string param b s = from_lexbuf param b (Lexing.from_string s)
+
+  end
+
+include (IMPLEMENTATION : INTERFACE)
 
 }

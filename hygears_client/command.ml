@@ -20,7 +20,7 @@ let list_problems connection =
         >>= fun frame -> 
             match frame.Ocsigen_http_frame.frame_content with
                 None -> failwith "Server down"
-              | Some data -> Ocsigen_stream.get data >>> Ocsigen_stream.string_of_stream 
+              | Some data -> Ocsigen_stream.get data >>> Ocsigen_stream.string_of_stream
                      >>= fun c -> Json_io.json_of_string c >>> return
 
  
